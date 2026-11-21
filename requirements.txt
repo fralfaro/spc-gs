@@ -1,0 +1,23 @@
+# requirements.txt: núcleo del proyecto SPC + 3DGS
+# PyTorch se instala aparte (ver nota abajo)
+
+numpy
+scipy
+pillow
+imageio
+opencv-python-headless
+tqdm
+pyyaml
+
+# Métricas
+scikit-image        # SSIM
+lpips               # LPIPS-VGG
+torchmetrics        # alternativa para PSNR/SSIM
+
+# Análisis y figuras
+pandas
+matplotlib
+jupyter
+
+# 3DGS
+gsplat
