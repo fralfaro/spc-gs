@@ -240,3 +240,4 @@ latex/**/*.blg
 latex/**/*.fdb_latexmk
 latex/**/*.fls
 latex/**/*.synctex.gz
+slides/demo
