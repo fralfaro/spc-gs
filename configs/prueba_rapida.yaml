@@ -1,0 +1,38 @@
+# Prueba de humo de la tubería completa (menos de 1 min en GPU, < 1 GB): pocas vistas, rejilla
+# pequeña, una razón y 300 iteraciones de 3DGS a 1/4 de resolución. Todo se escribe dentro de
+# outputs/prueba_rapida/ (no versionado), para no mezclarse con data/conditions ni results/.
+experimento: prueba_rapida
+descripcion: Prueba de humo de la CLI; sus números no tienen valor experimental.
+escena: truck
+semilla: 449
+
+rutas:
+  imagenes: data/{escena}
+  condiciones: outputs/prueba_rapida/condiciones
+  modelos: outputs/prueba_rapida/modelos
+  resultados: outputs/prueba_rapida/resultados
+
+vistas:
+  total: 6
+  prueba: 2
+  guardadas: {entrenamiento: 1, prueba: 1}
+
+rejilla: [64, 128]
+
+spc:
+  patrones_3d: [hadamard]
+  patrones_solo_2d: []
+  metodos: [directa, tv]
+  razones: [0.25]
+  ruido: null
+
+tv: {lam: 0.003, iteraciones: 10, iter_prox: 20}
+
+3dgs:
+  iteraciones: [300]
+  semillas: [449]
+  factor: 4
+  grado_sh: 3
+  condiciones: todas
+
+evaluacion: {extendida: false}

@@ -1,0 +1,35 @@
+# Variabilidad por semilla de 3DGS: semillas 450 y 451, 3000 iteraciones, en cinco
+# condiciones (filas de results/metrics_3d.csv con semilla 450 y 451). Las condiciones 2D son
+# las mismas del experimento principal (semilla 449 de los patrones) y se reutilizan.
+experimento: truck_256x512_semillas
+descripcion: >
+  Igual que truck_256x512, pero 3DGS con las semillas 450 y 451 en original, control y tres
+  condiciones TV.
+escena: truck
+semilla: 449
+
+vistas:
+  total: 24
+  prueba: 3
+  guardadas: {entrenamiento: 2, prueba: 2}
+
+rejilla: [256, 512]
+
+spc:
+  patrones_3d: [hadamard, random]
+  patrones_solo_2d: [dct]
+  metodos: [directa, tv]
+  razones: [0.05, 0.10, 0.25, 0.50]
+  ruido: null
+
+tv: {lam: 0.003, iteraciones: 100, iter_prox: 20}
+
+3dgs:
+  iteraciones: [3000]
+  semillas: [450, 451]
+  factor: 1
+  grado_sh: 3
+  condiciones: [original, control_256x512, hadamard_tv_05_256x512, hadamard_tv_50_256x512,
+                random_tv_05_256x512]
+
+evaluacion: {extendida: true}

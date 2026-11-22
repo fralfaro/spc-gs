@@ -1,0 +1,33 @@
+# Rejilla de 512x1024 (524 288 píxeles, el 98 % de los 534 534 de la imagen), solo métricas 2D
+# (filas 512x1024 de results/metrics_2d.csv). No se entrena 3DGS.
+experimento: truck_512x1024
+descripcion: >
+  Truck, 24 vistas, rejilla 512x1024; Hadamard, aleatorio y DCT con directa y TV al 5, 10, 25
+  y 50 %; solo 2D. La TV usa el mismo λ = 0.003 que en 256x512 (no se validó en esta rejilla).
+escena: truck
+semilla: 449
+
+vistas:
+  total: 24
+  prueba: 3
+  guardadas: {entrenamiento: 2, prueba: 2}
+
+rejilla: [512, 1024]
+
+spc:
+  patrones_3d: []
+  patrones_solo_2d: [hadamard, random, dct]
+  metodos: [directa, tv]
+  razones: [0.05, 0.10, 0.25, 0.50]
+  ruido: null
+
+tv: {lam: 0.003, iteraciones: 100, iter_prox: 20}
+
+3dgs:
+  iteraciones: []
+  semillas: [449]
+  factor: 1
+  grado_sh: 3
+  condiciones: todas
+
+evaluacion: {extendida: true}

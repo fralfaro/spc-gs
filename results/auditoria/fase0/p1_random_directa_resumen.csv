@@ -1,0 +1,30 @@
+variante,razon,PSNR,SSIM,SSIM_plano,SSIM_medio,SSIM_textura,PSNR_teorico,correlacion_AC,energia_AC_rec/verdadera
+solo DC (imagen plana),0.0,12.6675,0.4065,,,,,,
+"con DC, sin escalar (experimento)",0.05,12.8915,0.1923,0.2527,0.199,0.128,12.8903,0.2242,0.0503
+"con DC, AC escalado por n/m",0.05,6.9247,0.0297,0.0058,0.0122,0.0703,,,
+"con DC, todo escalado por n/m",0.05,5.5775,0.3551,0.7106,0.3099,0.0591,,,
+"sin DC, sin escalar",0.05,5.0316,0.0277,0.0423,0.0304,0.0108,,,
+"sin DC, escalado por n/m",0.05,6.4419,0.0288,0.0058,0.013,0.0669,,,
+"sin DC, + media verdadera (oráculo)",0.05,12.8916,0.1923,0.2526,0.199,0.1281,,,
+"hadamard ordenado, directa (referencia)",0.05,22.5653,0.6384,0.8079,0.593,0.516,,,
+"con DC, sin escalar (experimento)",0.1,13.1262,0.1651,0.1632,0.1594,0.173,13.125,0.3166,0.1002
+"con DC, AC escalado por n/m",0.1,7.8929,0.0458,0.0075,0.0185,0.1101,,,
+"con DC, todo escalado por n/m",0.1,5.5775,0.3551,0.7106,0.3099,0.0591,,,
+"sin DC, sin escalar",0.1,5.1787,0.031,0.0418,0.0339,0.0176,,,
+"sin DC, escalado por n/m",0.1,6.8405,0.0411,0.0079,0.0196,0.0946,,,
+"sin DC, + media verdadera (oráculo)",0.1,13.1262,0.1651,0.1632,0.1594,0.1731,,,
+"hadamard ordenado, directa (referencia)",0.1,24.4048,0.7364,0.8334,0.6943,0.6807,,,
+"con DC, sin escalar (experimento)",0.25,13.9242,0.1727,0.0947,0.1351,0.2857,13.9169,0.5011,0.2511
+"con DC, AC escalado por n/m",0.25,10.2174,0.0915,0.014,0.0396,0.2179,,,
+"con DC, todo escalado por n/m",0.25,5.6202,0.342,0.6767,0.2959,0.0673,,,
+"sin DC, sin escalar",0.25,5.5094,0.0372,0.0368,0.0366,0.0381,,,
+"sin DC, escalado por n/m",0.25,7.1447,0.061,0.015,0.0337,0.1326,,,
+"sin DC, + media verdadera (oráculo)",0.25,13.9242,0.1727,0.0947,0.1351,0.2857,,,
+"hadamard ordenado, directa (referencia)",0.25,27.6998,0.8762,0.9193,0.8499,0.8583,,,
+"con DC, sin escalar (experimento)",0.5,15.7028,0.2327,0.0817,0.1618,0.4496,15.6778,0.7079,0.5012
+"con DC, AC escalado por n/m",0.5,13.7247,0.1774,0.0333,0.0947,0.3992,,,
+"con DC, todo escalado por n/m",0.5,7.8976,0.2489,0.2871,0.1717,0.2892,,,
+"sin DC, sin escalar",0.5,5.9536,0.0493,0.0333,0.04,0.0741,,,
+"sin DC, escalado por n/m",0.5,7.0469,0.071,0.0226,0.0428,0.1459,,,
+"sin DC, + media verdadera (oráculo)",0.5,15.7029,0.2327,0.0817,0.1618,0.4496,,,
+"hadamard ordenado, directa (referencia)",0.5,33.4318,0.9575,0.9617,0.9471,0.9625,,,

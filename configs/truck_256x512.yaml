@@ -1,0 +1,40 @@
+# Experimento principal: escena Truck, rejilla SPC de 256x512, semilla 449.
+# Reproduce las condiciones de results/metrics_2d.csv (filas 256x512) y de
+# results/metrics_3d.csv (semilla 449, 3000 y 7000 iteraciones).
+#
+#   python -m src.cli reconstruir --config configs/truck_256x512.yaml
+#   python -m src.cli entrenar    --config configs/truck_256x512.yaml
+#   python -m src.cli evaluar     --config configs/truck_256x512.yaml
+#   python -m src.cli figuras     --config configs/truck_256x512.yaml
+experimento: truck_256x512
+descripcion: >
+  Truck, 24 vistas (21 de entrenamiento y 3 de prueba), rejilla 256x512; Hadamard y aleatorio
+  con reconstrucción directa y TV al 5, 10, 25 y 50 %; DCT solo en 2D; 3DGS a 3000 y 7000
+  iteraciones.
+escena: truck
+semilla: 449
+
+vistas:
+  total: 24
+  prueba: 3
+  guardadas: {entrenamiento: 2, prueba: 2}
+
+rejilla: [256, 512]
+
+spc:
+  patrones_3d: [hadamard, random]
+  patrones_solo_2d: [dct]          # DCT: valores continuos, no realizable con un DMD binario
+  metodos: [directa, tv]
+  razones: [0.05, 0.10, 0.25, 0.50]
+  ruido: null
+
+tv: {lam: 0.003, iteraciones: 100, iter_prox: 20}
+
+3dgs:
+  iteraciones: [3000, 7000]
+  semillas: [449]
+  factor: 1
+  grado_sh: 3
+  condiciones: todas
+
+evaluacion: {extendida: true}

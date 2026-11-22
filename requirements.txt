@@ -1,23 +1,42 @@
-# requirements.txt: núcleo del proyecto SPC + 3DGS
-# PyTorch se instala aparte (ver nota abajo)
+# requirements.txt: dependencias del proyecto SPC + 3DGS (un solo archivo).
+# Instalación (dentro de WSL2, en la raíz del repo):
+#   uv venv --python 3.12 .venv && source .venv/bin/activate
+#   uv pip install -r requirements.txt
+#
+# torch y torchvision se descargan del índice de PyTorch para CUDA 12.8.
+--extra-index-url https://download.pytorch.org/whl/cu128
 
+# Núcleo de cómputo
+torch==2.11.0+cu128
+torchvision==0.26.0+cu128
 numpy
 scipy
 pillow
-imageio
-opencv-python-headless
-tqdm
-pyyaml
+
+# 3D Gaussian Splatting (compila sus kernels CUDA en el primer uso: requiere
+# nvcc 12.8, gcc y ninja; ver scripts/entorno.sh)
+gsplat==1.5.3
+ninja
+packaging           # gsplat lo importa, pero no lo declara como dependencia
 
 # Métricas
-scikit-image        # SSIM
+scikit-image        # PSNR y SSIM
 lpips               # LPIPS-VGG
-torchmetrics        # alternativa para PSNR/SSIM
 
-# Análisis y figuras
+# Configuración de experimentos (configs/*.yaml)
+pyyaml
+
+# Análisis, figuras y notebooks
 pandas
 matplotlib
 jupyter
 
-# 3DGS
-gsplat
+# Pruebas
+pytest
+
+# Paquetes del requirements.txt original del repositorio que el código actual no
+# importa. Se conservan como referencia; descomentarlos si se necesitan.
+# imageio
+# opencv-python-headless
+# tqdm
+# torchmetrics

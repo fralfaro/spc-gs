@@ -1,0 +1,346 @@
+semilla = 449; salida = /root/spc-gs/results/auditoria/fase0
+
+====================================================================================================
+1) Reconstrucción directa del patrón aleatorio: escala y componente DC
+====================================================================================================
+Métricas a la resolución de la rejilla 256x512 contra la imagen remuestreada g (sin JPEG ni vuelta a 979x546); 24 vistas.
+                                                  PSNR    SSIM  SSIM_plano  SSIM_medio  SSIM_textura  PSNR_teorico  correlacion_AC  energia_AC_rec/verdadera
+variante                                razon                                                                                                               
+solo DC (imagen plana)                  0.00   12.6675  0.4065         NaN         NaN           NaN           NaN             NaN                       NaN
+con DC, sin escalar (experimento)       0.05   12.8915  0.1923      0.2527      0.1990        0.1280       12.8903          0.2242                    0.0503
+con DC, AC escalado por n/m             0.05    6.9247  0.0297      0.0058      0.0122        0.0703           NaN             NaN                       NaN
+con DC, todo escalado por n/m           0.05    5.5775  0.3551      0.7106      0.3099        0.0591           NaN             NaN                       NaN
+sin DC, sin escalar                     0.05    5.0316  0.0277      0.0423      0.0304        0.0108           NaN             NaN                       NaN
+sin DC, escalado por n/m                0.05    6.4419  0.0288      0.0058      0.0130        0.0669           NaN             NaN                       NaN
+sin DC, + media verdadera (oráculo)     0.05   12.8916  0.1923      0.2526      0.1990        0.1281           NaN             NaN                       NaN
+hadamard ordenado, directa (referencia) 0.05   22.5653  0.6384      0.8079      0.5930        0.5160           NaN             NaN                       NaN
+con DC, sin escalar (experimento)       0.10   13.1262  0.1651      0.1632      0.1594        0.1730       13.1250          0.3166                    0.1002
+con DC, AC escalado por n/m             0.10    7.8929  0.0458      0.0075      0.0185        0.1101           NaN             NaN                       NaN
+con DC, todo escalado por n/m           0.10    5.5775  0.3551      0.7106      0.3099        0.0591           NaN             NaN                       NaN
+sin DC, sin escalar                     0.10    5.1787  0.0310      0.0418      0.0339        0.0176           NaN             NaN                       NaN
+sin DC, escalado por n/m                0.10    6.8405  0.0411      0.0079      0.0196        0.0946           NaN             NaN                       NaN
+sin DC, + media verdadera (oráculo)     0.10   13.1262  0.1651      0.1632      0.1594        0.1731           NaN             NaN                       NaN
+hadamard ordenado, directa (referencia) 0.10   24.4048  0.7364      0.8334      0.6943        0.6807           NaN             NaN                       NaN
+con DC, sin escalar (experimento)       0.25   13.9242  0.1727      0.0947      0.1351        0.2857       13.9169          0.5011                    0.2511
+con DC, AC escalado por n/m             0.25   10.2174  0.0915      0.0140      0.0396        0.2179           NaN             NaN                       NaN
+con DC, todo escalado por n/m           0.25    5.6202  0.3420      0.6767      0.2959        0.0673           NaN             NaN                       NaN
+sin DC, sin escalar                     0.25    5.5094  0.0372      0.0368      0.0366        0.0381           NaN             NaN                       NaN
+sin DC, escalado por n/m                0.25    7.1447  0.0610      0.0150      0.0337        0.1326           NaN             NaN                       NaN
+sin DC, + media verdadera (oráculo)     0.25   13.9242  0.1727      0.0947      0.1351        0.2857           NaN             NaN                       NaN
+hadamard ordenado, directa (referencia) 0.25   27.6998  0.8762      0.9193      0.8499        0.8583           NaN             NaN                       NaN
+con DC, sin escalar (experimento)       0.50   15.7028  0.2327      0.0817      0.1618        0.4496       15.6778          0.7079                    0.5012
+con DC, AC escalado por n/m             0.50   13.7247  0.1774      0.0333      0.0947        0.3992           NaN             NaN                       NaN
+con DC, todo escalado por n/m           0.50    7.8976  0.2489      0.2871      0.1717        0.2892           NaN             NaN                       NaN
+sin DC, sin escalar                     0.50    5.9536  0.0493      0.0333      0.0400        0.0741           NaN             NaN                       NaN
+sin DC, escalado por n/m                0.50    7.0469  0.0710      0.0226      0.0428        0.1459           NaN             NaN                       NaN
+sin DC, + media verdadera (oráculo)     0.50   15.7029  0.2327      0.0817      0.1618        0.4496           NaN             NaN                       NaN
+hadamard ordenado, directa (referencia) 0.50   33.4318  0.9575      0.9617      0.9471        0.9625           NaN             NaN                       NaN
+
+====================================================================================================
+2) PSNR 2D: 24 vistas frente a 21 de entrenamiento
+====================================================================================================
+                   condicion  n  PSNR_24  PSNR_21_ent  PSNR_3_prueba  dif_21_menos_24  SSIM_24  SSIM_21_ent
+             control_256x512 24  27.2219      27.1243        27.9051          -0.0976   0.8579       0.8571
+            control_512x1024 24  38.0003      37.9036        38.6778          -0.0968   0.9848       0.9847
+      dct_directa_05_256x512 24  21.6149      21.5229        22.2590          -0.0920   0.5830       0.5820
+     dct_directa_05_512x1024 24  24.6210      24.5313        25.2492          -0.0897   0.7187       0.7177
+      dct_directa_10_256x512 24  22.8850      22.7904        23.5471          -0.0946   0.6402       0.6390
+     dct_directa_10_512x1024 24  26.7888      26.6982        27.4227          -0.0906   0.8117       0.8111
+      dct_directa_25_256x512 24  24.9135      24.8223        25.5521          -0.0912   0.7477       0.7469
+     dct_directa_25_512x1024 24  30.9168      30.8232        31.5713          -0.0935   0.9211       0.9207
+      dct_directa_50_256x512 24  26.4308      26.3369        27.0876          -0.0938   0.8230       0.8223
+     dct_directa_50_512x1024 24  35.1137      35.0231        35.7478          -0.0906   0.9694       0.9693
+           dct_tv_05_256x512 24  21.7991      21.6988        22.5011          -0.1003   0.6021       0.6011
+          dct_tv_05_512x1024 24  24.9938      24.9061        25.6077          -0.0877   0.7497       0.7491
+           dct_tv_10_256x512 24  23.1760      23.0799        23.8487          -0.0961   0.6653       0.6644
+          dct_tv_10_512x1024 24  27.3103      27.2208        27.9363          -0.0894   0.8374       0.8370
+           dct_tv_25_256x512 24  25.1735      25.0789        25.8352          -0.0945   0.7630       0.7623
+          dct_tv_25_512x1024 24  31.3274      31.2383        31.9506          -0.0890   0.9267       0.9265
+           dct_tv_50_256x512 24  26.4925      26.3983        27.1519          -0.0942   0.8200       0.8195
+          dct_tv_50_512x1024 24  34.9914      34.9070        35.5826          -0.0845   0.9635       0.9634
+ hadamard_directa_05_256x512 24  20.6270      20.5445        21.2046          -0.0825   0.5290       0.5280
+hadamard_directa_05_512x1024 24  23.1699      23.0842        23.7698          -0.0857   0.6621       0.6611
+ hadamard_directa_10_256x512 24  21.8920      21.8045        22.5046          -0.0875   0.5817       0.5807
+hadamard_directa_10_512x1024 24  25.0446      24.9628        25.6171          -0.0818   0.7495       0.7489
+ hadamard_directa_25_256x512 24  23.9181      23.8306        24.5305          -0.0875   0.7017       0.7007
+hadamard_directa_25_512x1024 24  28.4809      28.3957        29.0767          -0.0851   0.8803       0.8797
+ hadamard_directa_50_256x512 24  25.9183      25.8295        26.5402          -0.0888   0.7990       0.7983
+hadamard_directa_50_512x1024 24  33.1169      33.0365        33.6797          -0.0804   0.9530       0.9529
+      hadamard_tv_05_256x512 24  21.5250      21.4334        22.1664          -0.0916   0.5969       0.5960
+     hadamard_tv_05_512x1024 24  24.5362      24.4471        25.1596          -0.0891   0.7380       0.7373
+      hadamard_tv_10_256x512 24  22.8950      22.7987        23.5690          -0.0963   0.6597       0.6589
+     hadamard_tv_10_512x1024 24  26.7236      26.6331        27.3573          -0.0905   0.8238       0.8234
+      hadamard_tv_25_256x512 24  24.8746      24.7815        25.5266          -0.0931   0.7536       0.7529
+     hadamard_tv_25_512x1024 24  30.5422      30.4566        31.1415          -0.0856   0.9156       0.9153
+      hadamard_tv_50_256x512 24  26.3309      26.2383        26.9794          -0.0926   0.8144       0.8138
+     hadamard_tv_50_512x1024 24  34.3857      34.3013        34.9770          -0.0845   0.9590       0.9589
+   random_directa_05_256x512 24  12.6536      12.7183        12.2002           0.0648   0.2453       0.2468
+  random_directa_05_512x1024 24  12.6824      12.7481        12.2225           0.0657   0.2436       0.2448
+   random_directa_10_256x512 24  12.9338      12.9984        12.4820           0.0645   0.1974       0.1988
+  random_directa_10_512x1024 24  12.9963      13.0624        12.5343           0.0660   0.2027       0.2040
+   random_directa_25_256x512 24  13.8652      13.9278        13.4265           0.0627   0.1702       0.1718
+  random_directa_25_512x1024 24  14.0343      14.1000        13.5743           0.0657   0.1941       0.1960
+   random_directa_50_256x512 24  15.8199      15.8779        15.4136           0.0580   0.2018       0.2039
+  random_directa_50_512x1024 24  16.2408      16.3048        15.7931           0.0640   0.2476       0.2503
+        random_tv_05_256x512 24  20.3482      20.2496        21.0381          -0.0986   0.5540       0.5525
+       random_tv_05_512x1024 24  23.2113      23.1192        23.8554          -0.0920   0.6484       0.6476
+        random_tv_10_256x512 24  21.8868      21.7948        22.5309          -0.0920   0.6022       0.6011
+       random_tv_10_512x1024 24  25.4885      25.4089        26.0460          -0.0796   0.7270       0.7266
+        random_tv_25_256x512 24  24.3894      24.2992        25.0212          -0.0902   0.7014       0.7007
+       random_tv_25_512x1024 24  29.7393      29.6746        30.1924          -0.0647   0.8508       0.8505
+        random_tv_50_256x512 24  26.1230      26.0353        26.7369          -0.0877   0.7846       0.7841
+       random_tv_50_512x1024 24  33.7102      33.6444        34.1710          -0.0658   0.9290       0.9288
+
+|diferencia 21 - 24| máx = 0.100 dB, media = -0.065 dB
+
+Filas de metrics_2d.csv por (rejilla): {'256x512': 25, '512x1024': 25}
+Filas por (patron, metodo, rejilla):
+patron    metodo   rejilla 
+control   -        256x512     1
+                   512x1024    1
+dct       directa  256x512     4
+                   512x1024    4
+          tv       256x512     4
+                   512x1024    4
+hadamard  directa  256x512     4
+                   512x1024    4
+          tv       256x512     4
+                   512x1024    4
+random    directa  256x512     4
+                   512x1024    4
+          tv       256x512     4
+                   512x1024    4
+
+====================================================================================================
+3) Techo de la métrica 2D: contra la original (979x546) y contra la imagen remuestreada
+====================================================================================================
+(reconstrucciones puras: 294 s en cuda)
+                                       PSNR_vs_original  SSIM_vs_original  PSNR_guardada_en_rejilla  SSIM_guardada_en_rejilla  PSNR_puro_en_rejilla  SSIM_puro_en_rejilla  frac_MSE_por_rejilla
+rejilla  condicion                                                                                                                                                                             
+256x512  control_256x512                         27.222             0.858                    35.209                     0.981                   NaN                   NaN                 1.000
+         dct_directa_05_256x512                  21.615             0.583                    24.409                     0.723                24.421                 0.722                 0.278
+         dct_directa_10_256x512                  22.885             0.640                    26.702                     0.826                26.783                 0.825                 0.371
+         dct_directa_25_256x512                  24.914             0.748                    30.868                     0.935                31.610                 0.937                 0.590
+         dct_directa_50_256x512                  26.431             0.823                    34.015                     0.972                37.966                 0.983                 0.834
+         dct_tv_05_256x512                       21.799             0.602                    24.802                     0.753                24.528                 0.744                 0.289
+         dct_tv_10_256x512                       23.176             0.665                    27.300                     0.852                26.935                 0.845                 0.396
+         dct_tv_25_256x512                       25.173             0.763                    31.345                     0.941                31.471                 0.944                 0.624
+         dct_tv_50_256x512                       26.492             0.820                    33.946                     0.968                37.309                 0.983                 0.846
+         hadamard_directa_05_256x512             20.627             0.529                    23.072                     0.668                22.565                 0.638                 0.222
+         hadamard_directa_10_256x512             21.892             0.582                    25.189                     0.771                24.405                 0.736                 0.296
+         hadamard_directa_25_256x512             23.918             0.702                    28.897                     0.903                27.700                 0.876                 0.471
+         hadamard_directa_50_256x512             25.918             0.799                    32.737                     0.961                33.432                 0.957                 0.744
+         hadamard_tv_05_256x512                  21.525             0.597                    24.311                     0.740                24.060                 0.731                 0.272
+         hadamard_tv_10_256x512                  22.895             0.660                    26.689                     0.837                26.398                 0.832                 0.371
+         hadamard_tv_25_256x512                  24.875             0.754                    30.479                     0.929                30.581                 0.933                 0.583
+         hadamard_tv_50_256x512                  26.331             0.814                    33.457                     0.964                36.301                 0.979                 0.815
+         random_directa_05_256x512               12.654             0.245                    13.029                     0.298                12.892                 0.192                 0.035
+         random_directa_10_256x512               12.934             0.197                    13.406                     0.272                13.126                 0.165                 0.038
+         random_directa_25_256x512               13.865             0.170                    14.658                     0.282                13.924                 0.173                 0.047
+         random_directa_50_256x512               15.820             0.202                    17.284                     0.364                15.703                 0.233                 0.073
+         random_tv_05_256x512                    20.348             0.554                    22.238                     0.616                22.176                 0.609                 0.207
+         random_tv_10_256x512                    21.887             0.602                    24.484                     0.709                24.485                 0.703                 0.294
+         random_tv_25_256x512                    24.389             0.701                    28.657                     0.850                29.326                 0.854                 0.520
+         random_tv_50_256x512                    26.123             0.785                    32.283                     0.934                35.526                 0.949                 0.776
+512x1024 control_512x1024                        38.000             0.985                    41.698                     0.993                   NaN                   NaN                 1.000
+         dct_directa_05_512x1024                 24.621             0.719                    25.190                     0.742                   NaN                   NaN                 0.046
+         dct_directa_10_512x1024                 26.789             0.812                    27.683                     0.838                   NaN                   NaN                 0.076
+         dct_directa_25_512x1024                 30.917             0.921                    32.671                     0.944                   NaN                   NaN                 0.196
+         dct_directa_50_512x1024                 35.114             0.969                    37.969                     0.983                   NaN                   NaN                 0.511
+         dct_tv_05_512x1024                      24.994             0.750                    25.649                     0.775                   NaN                   NaN                 0.050
+         dct_tv_10_512x1024                      27.310             0.837                    28.329                     0.864                   NaN                   NaN                 0.085
+         dct_tv_25_512x1024                      31.327             0.927                    33.172                     0.949                   NaN                   NaN                 0.214
+         dct_tv_50_512x1024                      34.991             0.964                    37.712                     0.978                   NaN                   NaN                 0.498
+         hadamard_directa_05_512x1024            23.170             0.662                    23.696                     0.689                   NaN                   NaN                 0.033
+         hadamard_directa_10_512x1024            25.045             0.750                    25.834                     0.781                   NaN                   NaN                 0.051
+         hadamard_directa_25_512x1024            28.481             0.880                    29.859                     0.909                   NaN                   NaN                 0.113
+         hadamard_directa_50_512x1024            33.117             0.953                    35.285                     0.970                   NaN                   NaN                 0.326
+         hadamard_tv_05_512x1024                 24.536             0.738                    25.131                     0.763                   NaN                   NaN                 0.045
+         hadamard_tv_10_512x1024                 26.724             0.824                    27.626                     0.850                   NaN                   NaN                 0.075
+         hadamard_tv_25_512x1024                 30.542             0.916                    32.098                     0.938                   NaN                   NaN                 0.179
+         hadamard_tv_50_512x1024                 34.386             0.959                    36.794                     0.974                   NaN                   NaN                 0.433
+         random_directa_05_512x1024              12.682             0.244                    12.750                     0.280                   NaN                   NaN                 0.003
+         random_directa_10_512x1024              12.996             0.203                    13.097                     0.238                   NaN                   NaN                 0.003
+         random_directa_25_512x1024              14.034             0.194                    14.246                     0.228                   NaN                   NaN                 0.004
+         random_directa_50_512x1024              16.241             0.248                    16.674                     0.286                   NaN                   NaN                 0.007
+         random_tv_05_512x1024                   23.211             0.648                    23.598                     0.668                   NaN                   NaN                 0.033
+         random_tv_10_512x1024                   25.489             0.727                    26.055                     0.749                   NaN                   NaN                 0.056
+         random_tv_25_512x1024                   29.739             0.851                    30.778                     0.873                   NaN                   NaN                 0.148
+         random_tv_50_512x1024                   33.710             0.929                    35.517                     0.946                   NaN                   NaN                 0.372
+
+256x512, 50 % (sin random_directa): rango entre condiciones
+  PSNR_vs_original               25.92 –   26.49 dB  (rango 0.57)
+  PSNR_guardada_en_rejilla       32.28 –   34.02 dB  (rango 1.73)
+  PSNR_puro_en_rejilla           33.43 –   37.97 dB  (rango 4.53)
+
+512x1024, 50 % (sin random_directa): rango entre condiciones
+  PSNR_vs_original               33.12 –   35.11 dB  (rango 2.00)
+  PSNR_guardada_en_rejilla       35.28 –   37.97 dB  (rango 2.68)
+
+Spearman (orden de las 24 condiciones SPC 256x512) vs-original vs puro-en-rejilla: 0.991
+
+====================================================================================================
+4) Métricas 3D: 3 vistas de prueba frente a 230 vistas no usadas y otras semillas
+====================================================================================================
+Filas de metrics_3d.csv por (iteraciones, semilla):
+iteraciones  semilla
+3000         449        18
+             450         5
+             451         5
+7000         449        18
+30000        449         2
+filas duplicadas (condicion, iteraciones, semilla, factor): 0
+
+4a) 3000 iteraciones, semillas 449/450/451
+                          PSNR                 PSNR_ent                 PSNR_ext                
+semilla                    449     450     451      449     450     451      449     450     451
+condicion                                                                                       
+control_256x512         18.491  18.345  18.579   25.897  25.949  25.878   19.829  19.844  19.832
+hadamard_tv_05_256x512  17.882  17.981  18.054   21.461  21.455  21.463   18.651  18.663  18.582
+hadamard_tv_50_256x512  18.363  18.536  18.509   25.398  25.374  25.373   19.842  19.818  19.775
+original                17.969  18.109  18.125   28.812  28.772  28.708   19.878  19.850  19.874
+random_tv_05_256x512    17.532  17.730  17.508   20.318  20.301  20.310   17.989  17.978  18.009
+                          PSNR        PSNR_ext        PSNR_ent       
+                          mean    std     mean    std     mean    std
+condicion                                                            
+control_256x512         18.472  0.118   19.835  0.008   25.908  0.037
+hadamard_tv_05_256x512  17.972  0.087   18.632  0.043   21.460  0.004
+hadamard_tv_50_256x512  18.469  0.093   19.812  0.034   25.382  0.014
+original                18.068  0.086   19.867  0.015   28.764  0.052
+random_tv_05_256x512    17.590  0.122   17.992  0.016   20.310  0.009
+
+4b) Diferencias pareadas de PSNR (dB) contra el baseline original, semilla 449
+ iteraciones                   condicion referencia  conjunto   n    dif  ic_t_bajo  ic_t_alto  ic_bloques_bajo  ic_bloques_alto  n_1de8  dif_1de8  ic8_bajo  ic8_alto  concluyente_t concluyente_bloques
+        3000             control_256x512   original    prueba   3  0.522     -0.460      1.504              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        3000             control_256x512   original extendida 230 -0.049     -0.110      0.012           -0.119            0.044    29.0    -0.162    -0.365     0.042          False               False
+        3000 hadamard_directa_05_256x512   original    prueba   3 -0.337     -1.246      0.573              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        3000 hadamard_directa_05_256x512   original extendida 230 -1.721     -1.820     -1.622           -1.867           -1.516    29.0    -1.684    -2.011    -1.357           True                True
+        3000 hadamard_directa_10_256x512   original    prueba   3 -0.370     -0.638     -0.102              NaN              NaN     NaN       NaN       NaN       NaN           True                 NaN
+        3000 hadamard_directa_10_256x512   original extendida 230 -1.194     -1.271     -1.117           -1.293           -1.039    29.0    -1.204    -1.485    -0.923           True                True
+        3000 hadamard_directa_25_256x512   original    prueba   3  0.281     -0.900      1.461              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        3000 hadamard_directa_25_256x512   original extendida 230 -0.534     -0.598     -0.469           -0.626           -0.417    29.0    -0.613    -0.830    -0.396           True                True
+        3000 hadamard_directa_50_256x512   original    prueba   3  0.228     -0.475      0.932              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        3000 hadamard_directa_50_256x512   original extendida 230 -0.184     -0.234     -0.135           -0.253           -0.092    29.0    -0.212    -0.361    -0.064           True                True
+        3000      hadamard_tv_05_256x512   original    prueba   3 -0.087     -1.422      1.247              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        3000      hadamard_tv_05_256x512   original extendida 230 -1.226     -1.318     -1.134           -1.348           -1.046    29.0    -1.185    -1.486    -0.885           True                True
+        3000      hadamard_tv_10_256x512   original    prueba   3  0.183     -0.465      0.831              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        3000      hadamard_tv_10_256x512   original extendida 230 -0.782     -0.861     -0.704           -0.882           -0.631    29.0    -0.791    -1.048    -0.535           True                True
+        3000      hadamard_tv_25_256x512   original    prueba   3  0.306     -0.616      1.228              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        3000      hadamard_tv_25_256x512   original extendida 230 -0.320     -0.379     -0.261           -0.397           -0.220    29.0    -0.365    -0.538    -0.193           True                True
+        3000      hadamard_tv_50_256x512   original    prueba   3  0.394      0.013      0.776              NaN              NaN     NaN       NaN       NaN       NaN           True                 NaN
+        3000      hadamard_tv_50_256x512   original extendida 230 -0.036     -0.084      0.013           -0.094            0.050    29.0    -0.113    -0.266     0.039          False               False
+        3000   random_directa_05_256x512   original    prueba   3 -5.810     -8.891     -2.729              NaN              NaN     NaN       NaN       NaN       NaN           True                 NaN
+        3000   random_directa_05_256x512   original extendida 230 -7.331     -7.520     -7.142           -7.604           -6.920    29.0    -7.155    -7.742    -6.568           True                True
+        3000   random_directa_10_256x512   original    prueba   3 -5.599     -8.838     -2.360              NaN              NaN     NaN       NaN       NaN       NaN           True                 NaN
+        3000   random_directa_10_256x512   original extendida 230 -7.133     -7.318     -6.948           -7.399           -6.733    29.0    -6.941    -7.515    -6.368           True                True
+        3000   random_directa_25_256x512   original    prueba   3 -5.209     -8.292     -2.126              NaN              NaN     NaN       NaN       NaN       NaN           True                 NaN
+        3000   random_directa_25_256x512   original extendida 230 -6.487     -6.659     -6.314           -6.744           -6.110    29.0    -6.331    -6.871    -5.791           True                True
+        3000   random_directa_50_256x512   original    prueba   3 -4.084     -7.627     -0.542              NaN              NaN     NaN       NaN       NaN       NaN           True                 NaN
+        3000   random_directa_50_256x512   original extendida 230 -5.061     -5.209     -4.912           -5.284           -4.735    29.0    -4.990    -5.454    -4.526           True                True
+        3000        random_tv_05_256x512   original    prueba   3 -0.437     -1.334      0.459              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        3000        random_tv_05_256x512   original extendida 230 -1.889     -1.999     -1.779           -2.053           -1.661    29.0    -1.820    -2.192    -1.449           True                True
+        3000        random_tv_10_256x512   original    prueba   3 -0.346     -1.251      0.559              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        3000        random_tv_10_256x512   original extendida 230 -1.276     -1.366     -1.185           -1.420           -1.088    29.0    -1.163    -1.471    -0.855           True                True
+        3000        random_tv_25_256x512   original    prueba   3  0.527     -0.604      1.658              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        3000        random_tv_25_256x512   original extendida 230 -0.422     -0.489     -0.355           -0.530           -0.288    29.0    -0.440    -0.689    -0.192           True                True
+        3000        random_tv_50_256x512   original    prueba   3  0.597     -0.642      1.836              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        3000        random_tv_50_256x512   original extendida 230 -0.143     -0.195     -0.090           -0.213           -0.040    29.0    -0.219    -0.422    -0.015           True                True
+        7000             control_256x512   original    prueba   3  0.535     -0.055      1.124              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        7000             control_256x512   original extendida 230  0.081      0.016      0.145           -0.003            0.189    29.0     0.028    -0.161     0.217           True               False
+        7000 hadamard_directa_05_256x512   original    prueba   3 -0.535     -1.709      0.639              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        7000 hadamard_directa_05_256x512   original extendida 230 -1.629     -1.742     -1.516           -1.816           -1.389    29.0    -1.532    -1.914    -1.150           True                True
+        7000 hadamard_directa_10_256x512   original    prueba   3 -0.540     -1.316      0.237              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        7000 hadamard_directa_10_256x512   original extendida 230 -1.216     -1.310     -1.121           -1.347           -1.039    29.0    -1.224    -1.531    -0.918           True                True
+        7000 hadamard_directa_25_256x512   original    prueba   3  0.072     -0.742      0.886              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        7000 hadamard_directa_25_256x512   original extendida 230 -0.493     -0.563     -0.422           -0.602           -0.338    29.0    -0.529    -0.763    -0.295           True                True
+        7000 hadamard_directa_50_256x512   original    prueba   3  0.369     -0.033      0.771              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        7000 hadamard_directa_50_256x512   original extendida 230 -0.122     -0.191     -0.053           -0.207           -0.003    29.0    -0.217    -0.504     0.070           True                True
+        7000      hadamard_tv_05_256x512   original    prueba   3  0.099     -0.505      0.703              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        7000      hadamard_tv_05_256x512   original extendida 230 -1.141     -1.247     -1.035           -1.307           -0.927    29.0    -1.101    -1.464    -0.738           True                True
+        7000      hadamard_tv_10_256x512   original    prueba   3  0.188     -0.466      0.841              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        7000      hadamard_tv_10_256x512   original extendida 230 -0.699     -0.784     -0.613           -0.823           -0.513    29.0    -0.725    -1.054    -0.396           True                True
+        7000      hadamard_tv_25_256x512   original    prueba   3  0.189     -1.601      1.979              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        7000      hadamard_tv_25_256x512   original extendida 230 -0.217     -0.278     -0.157           -0.299           -0.097    29.0    -0.217    -0.430    -0.004           True                True
+        7000      hadamard_tv_50_256x512   original    prueba   3  0.356     -0.147      0.858              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        7000      hadamard_tv_50_256x512   original extendida 230 -0.015     -0.070      0.040           -0.101            0.094    29.0    -0.051    -0.236     0.135          False               False
+        7000   random_directa_05_256x512   original    prueba   3 -5.588     -8.783     -2.393              NaN              NaN     NaN       NaN       NaN       NaN           True                 NaN
+        7000   random_directa_05_256x512   original extendida 230 -7.083     -7.285     -6.882           -7.353           -6.658    29.0    -6.916    -7.571    -6.261           True                True
+        7000   random_directa_10_256x512   original    prueba   3 -5.504     -9.155     -1.854              NaN              NaN     NaN       NaN       NaN       NaN           True                 NaN
+        7000   random_directa_10_256x512   original extendida 230 -6.986     -7.184     -6.788           -7.271           -6.558    29.0    -6.824    -7.467    -6.181           True                True
+        7000   random_directa_25_256x512   original    prueba   3 -5.230     -8.628     -1.831              NaN              NaN     NaN       NaN       NaN       NaN           True                 NaN
+        7000   random_directa_25_256x512   original extendida 230 -6.578     -6.760     -6.397           -6.852           -6.173    29.0    -6.461    -7.039    -5.884           True                True
+        7000   random_directa_50_256x512   original    prueba   3 -4.301     -7.787     -0.815              NaN              NaN     NaN       NaN       NaN       NaN           True                 NaN
+        7000   random_directa_50_256x512   original extendida 230 -5.426     -5.588     -5.265           -5.683           -5.074    29.0    -5.397    -5.901    -4.892           True                True
+        7000        random_tv_05_256x512   original    prueba   3 -0.447     -2.021      1.127              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        7000        random_tv_05_256x512   original extendida 230 -1.862     -2.004     -1.721           -2.051           -1.614    29.0    -1.712    -2.116    -1.307           True                True
+        7000        random_tv_10_256x512   original    prueba   3 -0.288     -1.540      0.963              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        7000        random_tv_10_256x512   original extendida 230 -1.099     -1.199     -0.999           -1.247           -0.900    29.0    -1.035    -1.373    -0.697           True                True
+        7000        random_tv_25_256x512   original    prueba   3  0.337     -0.294      0.969              NaN              NaN     NaN       NaN       NaN       NaN          False                 NaN
+        7000        random_tv_25_256x512   original extendida 230 -0.385     -0.460     -0.309           -0.491           -0.249    29.0    -0.383    -0.611    -0.156           True                True
+        7000        random_tv_50_256x512   original    prueba   3  0.443      0.188      0.697              NaN              NaN     NaN       NaN       NaN       NaN           True                 NaN
+        7000        random_tv_50_256x512   original extendida 230  0.004     -0.060      0.068           -0.084            0.115    29.0    -0.036    -0.233     0.162          False               False
+
+Resumen de concluyentes (IC 95 %):
+                                       concluyente_t concluyente_bloques
+iteraciones referencia      conjunto                                    
+3000        control_256x512 extendida             15                  15
+                            prueba                 4                   0
+            original        extendida             15                  15
+                            prueba                 6                   0
+7000        control_256x512 extendida             17                  16
+                            prueba                 6                   0
+            original        extendida             15                  14
+                            prueba                 5                   0
+
+4c) 3000 it: Spearman PSNR(3 prueba) vs PSNR(230 ext) = 0.870 (n = 18); PSNR(21 ent) vs PSNR(230 ext) = 0.994
+
+4c) 7000 it: Spearman PSNR(3 prueba) vs PSNR(230 ext) = 0.917 (n = 18); PSNR(21 ent) vs PSNR(230 ext) = 0.983
+baseline 3000 it, prueba: n = 3, media 17.97, de 1.81, mín 16.45, máx 19.97
+baseline 3000 it, extendida: n = 230, media 19.88, de 1.60, mín 12.41, máx 24.79
+autocorrelación lag-1 de la diferencia hadamard_tv_05 - original (230 vistas): 0.696
+
+====================================================================================================
+5) Vistas usadas para elegir λ
+====================================================================================================
+24 vistas: ['000001.jpg', '000012.jpg', '000023.jpg', '000034.jpg', '000055.jpg', '000066.jpg', '000077.jpg', '000088.jpg', '000099.jpg', '000110.jpg', '000121.jpg', '000142.jpg', '000153.jpg', '000164.jpg', '000175.jpg', '000186.jpg', '000197.jpg', '000208.jpg', '000229.jpg', '000240.jpg', '000251.jpg', '000044.jpg', '000131.jpg', '000218.jpg']
+prueba: ['000044.jpg', '000131.jpg', '000218.jpg']
+000130.jpg: ¿entre las 24? False; distancia de cámara a las de prueba {'000044.jpg': 3.213, '000131.jpg': 0.331, '000218.jpg': 5.892}; a la vista de entrenamiento más cercana 0.897
+000009.jpg: ¿entre las 24? False; distancia de cámara a las de prueba {'000044.jpg': 1.943, '000131.jpg': 1.25, '000218.jpg': 4.384}; a la vista de entrenamiento más cercana 0.656
+000134.jpg: ¿entre las 24? False; distancia de cámara a las de prueba {'000044.jpg': 1.968, '000131.jpg': 1.163, '000218.jpg': 4.455}; a la vista de entrenamiento más cercana 0.677
+000250.jpg: ¿entre las 24? False; distancia de cámara a las de prueba {'000044.jpg': 9.136, '000131.jpg': 9.257, '000218.jpg': 6.984}; a la vista de entrenamiento más cercana 0.118
+distancia media entre cámaras consecutivas: 0.338 (mediana 0.354)
+hadamard_tv_05_256x512: lam_tv = 0.003, iter_tv = 100, semilla = 449
+random_tv_50_256x512: lam_tv = 0.003, iter_tv = 100, semilla = 449
+dct_tv_25_256x512: lam_tv = 0.003, iter_tv = 100, semilla = 449
+hadamard_tv_05_512x1024: lam_tv = 0.003, iter_tv = 100, semilla = 449
+dct_tv_50_512x1024: lam_tv = 0.003, iter_tv = 100, semilla = 449
+
+Barrido existente en 3 vistas lejanas (results/auditoria/barrido_lambda.csv):
+  patron  razon  lam_mejor  PSNR_mejor  lam_0.003  PSNR_0.003  perdida_dB
+hadamard   0.05      0.003      21.299      0.003      21.299       0.000
+hadamard   0.25      0.000      24.407      0.003      24.346       0.061
+  random   0.05      0.003      20.206      0.003      20.206       0.000
+  random   0.25      0.001      23.985      0.003      23.871       0.114
+
+====================================================================================================
+6) Valores de los patrones (¿realizables con un DMD binario?)
+====================================================================================================
+  patron  indice  valores_distintos  min_x_sqrtN  max_x_sqrtN
+hadamard       0                  1       1.0000       1.0000
+hadamard       1                  2      -1.0000       1.0000
+hadamard       7                  2      -1.0000       1.0000
+hadamard     513                  2      -1.0000       1.0000
+hadamard    5000                  2      -1.0000       1.0000
+hadamard   65535                  2      -1.0000       1.0000
+  random       0                  1       1.0000       1.0000
+  random       1                  2      -1.0000       1.0000
+  random       7                  2      -1.0000       1.0000
+  random     513                  2      -1.0000       1.0000
+  random    5000                  2      -1.0000       1.0000
+  random   65535                  2      -1.0000       1.0000
+     dct       0                  1       1.0000       1.0000
+     dct       1                512      -1.4142       1.4142
+     dct       7                512      -1.4142       1.4142
+     dct     513              65526      -2.0000       2.0000
+     dct    5000               8192      -1.9994       1.9994
+     dct   65535              65528      -2.0000       2.0000

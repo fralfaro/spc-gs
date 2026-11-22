@@ -1,0 +1,10 @@
+medida,valor
+imágenes registradas en COLMAP,251.0
+puntos 3D (inicialización de las gaussianas),136029.0
+largo medio de pista (imágenes por punto),7.84
+% de puntos observados por alguna vista de PRUEBA,8.35
+% de puntos observados por alguna de las 21 vistas de ENTRENAMIENTO,45.12
+% de puntos que NINGUNA vista de entrenamiento observa,54.88
+% de puntos con al menos 2 vistas de entrenamiento (triangulables solo con ellas),13.79
+"PSNR entre 000130 (elección de λ) y 000131 (prueba), dB",12.7
+SSIM entre 000130 y 000131,0.3208

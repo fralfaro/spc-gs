@@ -1,0 +1,31 @@
+# 30000 iteraciones de 3DGS, solo baseline original y control (filas de 30000 iteraciones de
+# results/metrics_3d.csv).
+experimento: truck_256x512_30k
+descripcion: Baseline original y control de 256x512 con 30000 iteraciones de 3DGS.
+escena: truck
+semilla: 449
+
+vistas:
+  total: 24
+  prueba: 3
+  guardadas: {entrenamiento: 2, prueba: 2}
+
+rejilla: [256, 512]
+
+spc:
+  patrones_3d: []
+  patrones_solo_2d: []
+  metodos: [directa, tv]
+  razones: [0.05, 0.10, 0.25, 0.50]
+  ruido: null
+
+tv: {lam: 0.003, iteraciones: 100, iter_prox: 20}
+
+3dgs:
+  iteraciones: [30000]
+  semillas: [449]
+  factor: 1
+  grado_sh: 3
+  condiciones: [original, control_256x512]
+
+evaluacion: {extendida: true}

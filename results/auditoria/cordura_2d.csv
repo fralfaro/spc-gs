@@ -1,0 +1,68 @@
+prueba,descripcion,vista,PSNR,SSIM,esperado
+S1,"hadamard, 100 %, directa vs rejilla",000001.jpg,128.88,1.0,muy alto (> 60 dB)
+S1,"hadamard, 100 %, TV vs rejilla",000001.jpg,48.87,0.9963,alto (TV con λ>0 suaviza un poco)
+S1,"random, 100 %, directa vs rejilla",000001.jpg,129.1,1.0,muy alto (> 60 dB)
+S1,"random, 100 %, TV vs rejilla",000001.jpg,48.87,0.9963,alto (TV con λ>0 suaviza un poco)
+S1,"dct, 100 %, directa vs rejilla",000001.jpg,128.96,1.0,muy alto (> 60 dB)
+S1,"dct, 100 %, TV vs rejilla",000001.jpg,48.87,0.9963,alto (TV con λ>0 suaviza un poco)
+S2,"hadamard 100 % directa, tubería completa vs control",000001.jpg,129.45,1.0,muy alto (igual al control)
+S2,"hadamard 100 % directa, tubería completa vs original",000001.jpg,26.82,0.8407,≈ control vs original
+S2,control vs original (referencia),000001.jpg,26.82,0.8407,27.2 dB en promedio
+S3,"random 25 %, directa, operador correcto",000001.jpg,13.98,0.1735,referencia
+S3,"random 25 %, directa, operador de otra semilla",000001.jpg,11.77,0.0489,falla (mucho menor)
+S3,"random 25 %, tv, operador correcto",000001.jpg,28.28,0.8157,referencia
+S3,"random 25 %, tv, operador de otra semilla",000001.jpg,11.18,0.048,falla (mucho menor)
+S4,"hadamard 25 %, directa, y correcto",000001.jpg,27.8,0.8684,referencia
+S4,"hadamard 25 %, directa, y permutado al azar",000001.jpg,7.0,0.0097,falla (mucho menor)
+S6,"hadamard 100 %, directa, Poisson 1e+02 fotones",000001.jpg,10.91,0.1104,sube con los fotones
+S6,"hadamard 100 %, directa, Poisson 1e+03 fotones",000001.jpg,19.2,0.3987,sube con los fotones
+S6,"hadamard 100 %, directa, Poisson 1e+04 fotones",000001.jpg,29.06,0.7891,sube con los fotones
+S6,"hadamard 100 %, directa, Poisson 1e+05 fotones",000001.jpg,39.01,0.9684,sube con los fotones
+S7,imagen negra (y = 0) vs original,000001.jpg,5.2,0.0007,piso trivial
+S7,solo DC: imagen plana del color medio vs original,000001.jpg,12.45,0.4035,piso trivial
+S1,"hadamard, 100 %, directa vs rejilla",000121.jpg,128.23,1.0,muy alto (> 60 dB)
+S1,"hadamard, 100 %, TV vs rejilla",000121.jpg,49.05,0.9963,alto (TV con λ>0 suaviza un poco)
+S1,"random, 100 %, directa vs rejilla",000121.jpg,128.13,1.0,muy alto (> 60 dB)
+S1,"random, 100 %, TV vs rejilla",000121.jpg,49.05,0.9963,alto (TV con λ>0 suaviza un poco)
+S1,"dct, 100 %, directa vs rejilla",000121.jpg,128.16,1.0,muy alto (> 60 dB)
+S1,"dct, 100 %, TV vs rejilla",000121.jpg,49.05,0.9963,alto (TV con λ>0 suaviza un poco)
+S2,"hadamard 100 % directa, tubería completa vs control",000121.jpg,128.9,1.0,muy alto (igual al control)
+S2,"hadamard 100 % directa, tubería completa vs original",000121.jpg,25.56,0.8421,≈ control vs original
+S2,control vs original (referencia),000121.jpg,25.56,0.8421,27.2 dB en promedio
+S3,"random 25 %, directa, operador correcto",000121.jpg,13.56,0.179,referencia
+S3,"random 25 %, directa, operador de otra semilla",000121.jpg,11.35,0.0421,falla (mucho menor)
+S3,"random 25 %, tv, operador correcto",000121.jpg,27.54,0.8281,referencia
+S3,"random 25 %, tv, operador de otra semilla",000121.jpg,10.79,0.0423,falla (mucho menor)
+S4,"hadamard 25 %, directa, y correcto",000121.jpg,26.57,0.8656,referencia
+S4,"hadamard 25 %, directa, y permutado al azar",000121.jpg,6.01,0.0096,falla (mucho menor)
+S6,"hadamard 100 %, directa, Poisson 1e+02 fotones",000121.jpg,10.04,0.1192,sube con los fotones
+S6,"hadamard 100 %, directa, Poisson 1e+03 fotones",000121.jpg,18.03,0.3898,sube con los fotones
+S6,"hadamard 100 %, directa, Poisson 1e+04 fotones",000121.jpg,27.84,0.7514,sube con los fotones
+S6,"hadamard 100 %, directa, Poisson 1e+05 fotones",000121.jpg,37.81,0.9571,sube con los fotones
+S7,imagen negra (y = 0) vs original,000121.jpg,4.03,0.0007,piso trivial
+S7,solo DC: imagen plana del color medio vs original,000121.jpg,11.95,0.4272,piso trivial
+S1,"hadamard, 100 %, directa vs rejilla",000251.jpg,128.02,1.0,muy alto (> 60 dB)
+S1,"hadamard, 100 %, TV vs rejilla",000251.jpg,49.16,0.9957,alto (TV con λ>0 suaviza un poco)
+S1,"random, 100 %, directa vs rejilla",000251.jpg,128.2,1.0,muy alto (> 60 dB)
+S1,"random, 100 %, TV vs rejilla",000251.jpg,49.16,0.9957,alto (TV con λ>0 suaviza un poco)
+S1,"dct, 100 %, directa vs rejilla",000251.jpg,128.0,1.0,muy alto (> 60 dB)
+S1,"dct, 100 %, TV vs rejilla",000251.jpg,49.16,0.9957,alto (TV con λ>0 suaviza un poco)
+S2,"hadamard 100 % directa, tubería completa vs control",000251.jpg,128.66,1.0,muy alto (igual al control)
+S2,"hadamard 100 % directa, tubería completa vs original",000251.jpg,26.43,0.8559,≈ control vs original
+S2,control vs original (referencia),000251.jpg,26.43,0.8559,27.2 dB en promedio
+S3,"random 25 %, directa, operador correcto",000251.jpg,13.11,0.1534,referencia
+S3,"random 25 %, directa, operador de otra semilla",000251.jpg,10.9,0.0437,falla (mucho menor)
+S3,"random 25 %, tv, operador correcto",000251.jpg,28.99,0.8473,referencia
+S3,"random 25 %, tv, operador de otra semilla",000251.jpg,10.38,0.0468,falla (mucho menor)
+S4,"hadamard 25 %, directa, y correcto",000251.jpg,27.54,0.8742,referencia
+S4,"hadamard 25 %, directa, y permutado al azar",000251.jpg,5.67,0.0097,falla (mucho menor)
+S6,"hadamard 100 %, directa, Poisson 1e+02 fotones",000251.jpg,10.22,0.1025,sube con los fotones
+S6,"hadamard 100 %, directa, Poisson 1e+03 fotones",000251.jpg,18.39,0.3571,sube con los fotones
+S6,"hadamard 100 %, directa, Poisson 1e+04 fotones",000251.jpg,28.11,0.7372,sube con los fotones
+S6,"hadamard 100 %, directa, Poisson 1e+05 fotones",000251.jpg,38.02,0.9554,sube con los fotones
+S7,imagen negra (y = 0) vs original,000251.jpg,3.69,0.0009,piso trivial
+S7,solo DC: imagen plana del color medio vs original,000251.jpg,11.59,0.4571,piso trivial
+S5,random 5 %: incluye DC (índice 0),-,,,sí
+S5,random 10 %: incluye DC (índice 0),-,,,sí
+S5,random 25 %: incluye DC (índice 0),-,,,sí
+S5,random 50 %: incluye DC (índice 0),-,,,sí
