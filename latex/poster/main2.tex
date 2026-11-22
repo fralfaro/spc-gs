@@ -133,12 +133,12 @@ Stage & Time \\
 2D direct & $\le$ 7 ms / view \\
 2D TV, 256$\times$512 & 0.99--1.27 s / view \\
 2D TV, 512$\times$1024 & 1.69--1.75 s / view \\
-3DGS 3000 / 7000 it. & 63--90 s / 146--363 s \\
+3DGS 3000 / 7000 it. & 63--90 s / 146--384 s \\
 3DGS 30\,000 it. & 1140--3495 s \\
 \bottomrule
 \end{tabular*}
 \par\smallskip
-Peak memory 1.0--4.3\,GiB (SPC).
+Peak memory 1.0--6.3\,GiB (SPC).
 }
 
 %----------------------------------------------------------------------------------------
@@ -196,7 +196,7 @@ Configs, tests and all CSV files.
 \begin{minipage}[t]{0.40\linewidth}\vspace{0pt}\raggedright
 \begin{tcolorbox}[enhanced,colback=lightblue!10,colframe=usmblue,boxrule=1pt,arc=2mm,left=2mm,right=2mm,top=1mm,bottom=1mm,
   title={\small\bfseries Hardware and software},fonttitle=\small\bfseries,coltitle=white,colbacktitle=usmblue]
- \small RTX 4060 Laptop (8\,GB), WSL2 Ubuntu 24.04, CUDA 12.8, gsplat 1.5.3. Seed 449. Noise off in the main results.
+ \small RTX 4060 Laptop (8\,GB), WSL2 Ubuntu 24.04, CUDA 12.8, gsplat 1.5.3. Seed 449. Noise off in the main results. Baseline check (251 views): 23.54 dB vs. 23.51 dB published.
 \end{tcolorbox}
 \end{minipage}
 }
@@ -263,7 +263,7 @@ Control (no SPC) & \multicolumn{4}{c}{27.22} \\
 
 \medskip
 \centering
-\includegraphics[width=0.78\linewidth]{fig_3d_renders.png}\\[-0.2ex]
+\includegraphics[width=0.5\linewidth]{fig_3d_renders.png}\\[-0.2ex]
 {\small Test views 000044 and 000131 (columns: original image, baseline, control, Hadamard + TV 5\,\% and 50\,\%, random + TV 5\,\%).}
 }
 
@@ -272,7 +272,7 @@ Control (no SPC) & \multicolumn{4}{c}{27.22} \\
 \raggedright
 \begin{itemize}\compresslist
  \item \textbf{2D:} Hadamard + TV loses 0.89\,dB at 50\,\% and 5.70\,dB at 5\,\% vs. the control.
- \item \textbf{3D:} 3DGS inherits the 2D loss; with 230 held-out views, 50\,\% matches the baseline.
+ \item \textbf{3D:} inherits the 2D loss up to $\approx$28.5\,dB, then saturates (31--32\,dB). On 230 held-out views, 50\,\% matches the baseline (10\,\% on the 512$\times$1024 grid).
  \item \textbf{Limits:} one scene, one seed, COLMAP poses from original images (optimistic), simulated optics.
  \item \textbf{Next:} more scenes, re-estimated poses, 3DGS from the measurements.
 \end{itemize}

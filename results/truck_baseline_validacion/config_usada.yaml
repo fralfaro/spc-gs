@@ -1,0 +1,51 @@
+# Configuración resuelta de este experimento (escrita por src/cli.py).
+archivo: configs/truck_baseline_validacion.yaml
+creado: '2026-11-22T20:20:10'
+commit: 3dcd40f11bb1c596a4651cfcca96570a91c315b5
+cambios_sin_commit: true
+configuracion:
+  experimento: truck_baseline_validacion
+  descripcion: 'Baseline 3DGS con las 251 vistas (220 de entrenamiento, 31 de prueba)
+    para compararlo con el artículo original. Usa el entrenador compacto sobre gsplat
+    de este repositorio.
+
+    '
+  escena: truck
+  semilla: 449
+  rutas:
+    imagenes: data/{escena}
+    condiciones: data/conditions/{escena}_todas
+    modelos: outputs/{escena}_todas
+    resultados: results/{experimento}
+  vistas:
+    total: 251
+    prueba: 31
+    guardadas:
+      entrenamiento: 2
+      prueba: 2
+  rejilla:
+  - 256
+  - 512
+  spc:
+    patrones_3d: []
+    patrones_solo_2d: []
+    metodos:
+    - directa
+    razones:
+    - 0.25
+    ruido: null
+  tv:
+    lam: 0.003
+    iteraciones: 100
+    iter_prox: 20
+  3dgs:
+    iteraciones:
+    - 7000
+    semillas:
+    - 449
+    factor: 1
+    grado_sh: 3
+    condiciones:
+    - original
+  evaluacion:
+    extendida: false

@@ -1,0 +1,4 @@
+fecha,subcomando,commit,cambios_sin_commit,duracion_s,detalle
+2026-11-22T15:14:00,reconstruir,3dcd40f11bb1c596a4651cfcca96570a91c315b5,True,238.1,
+2026-11-22T19:37:03,entrenar,3dcd40f11bb1c596a4651cfcca96570a91c315b5,True,332.7,
+2026-11-22T20:20:03,evaluar,3dcd40f11bb1c596a4651cfcca96570a91c315b5,True,2577.9,

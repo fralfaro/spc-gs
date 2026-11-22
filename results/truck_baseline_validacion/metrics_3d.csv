@@ -1,0 +1,3 @@
+experimento,escena,condicion,tipo,patron,metodo,razon,rejilla,iteraciones,semilla,factor,conjunto,n_vistas,PSNR,SSIM,LPIPS,gaussianas,tiempo_entrenamiento_s,mem_max_GiB,corrida
+truck_baseline_validacion,truck,original,original,original,-,1.000000,-,7000,449,1,prueba,31,23.544532,0.848300,0.242479,2022373,331.900000,6.234000,outputs/truck_todas/original/it7000_s449_f1
+truck_baseline_validacion,truck,original,original,original,-,1.000000,-,7000,449,1,entrenamiento,220,25.032823,0.872917,0.226810,2022373,331.900000,6.234000,outputs/truck_todas/original/it7000_s449_f1

@@ -1,0 +1,740 @@
+---
+pagetitle: "Cámara de un píxel y 3D Gaussian Splatting: ¿cuántas mediciones se necesitan?"
+lang: es
+
+format:
+  revealjs:
+    theme: [default, style.scss]
+    slide-number: true
+    progress: true
+    history: false
+    transition: fade
+    transition-speed: fast
+    incremental: false
+    fig-align: center
+    center: false
+    width: 1600
+    height: 900
+    margin: 0.04
+    logo: "images/usm.png"
+    scrollable: false
+    title-slide: false
+    slide-level: 2
+    footer: "INF449 · Single Pixel Camera + 3D Gaussian Splatting"
+    preview-links: auto
+    html-math-method: katex
+    embed-resources: true
+    self-contained-math: true
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+##  {.hero-slide}
+
+:::::::: title-hero
+::: eyebrow
+INF449 · Fotografía Computacional · Proyecto final
+:::
+
+::: hero-paper
+¿Cuántas mediciones necesita una cámara de un píxel?\
+De la reconstrucción 2D a 3D Gaussian Splatting
+:::
+
+::: hero-authors
+Francisco Alfaro · Ayrton Perez
+:::
+
+::: hero-meta
+Universidad Técnica Federico Santa María, Valparaíso, Chile
+
+Escena Truck (Tanks and Temples) · código: github.com/fralfaro/spc-gs
+:::
+
+::: hero-presenter
+Presenta: **Francisco Alfaro** · Departamento de Electrónica
+:::
+::::::::
+
+::: notes
+Presento el proyecto final: una cámara de un píxel simulada sobre las vistas de la escena Truck, y qué le pasa a la calidad, primero en 2D y luego en un modelo 3D con Gaussian Splatting, cuando se reduce el número de mediciones. Voy a dejar claro el objetivo, las hipótesis y qué resultados las confirman.
+:::
+
+## Medir menos ahorra tiempo, pero ¿cuánta calidad se pierde?
+
+::: eyebrow
+Problema y objetivo
+:::
+
+:::::: problem-text
+::: fragment
+[Problema]{.kicker}
+
+Una cámara de un píxel (SPC) cambia el sensor matricial por **un detector** y una secuencia de patrones: sensor más simple, pero **más mediciones por imagen**.
+:::
+
+::: fragment
+[Brecha]{.kicker}
+
+Una escena 3D necesita **decenas o cientos de vistas**. Cada medición ahorrada por vista acorta la captura, pero **no se sabe cuánto daña** al modelo 3D.
+:::
+
+::: fragment
+[Objetivo]{.kicker}
+
+Medir cuánta calidad se pierde en las vistas 2D y en un modelo **3D Gaussian Splatting** al tomar **5, 10, 25 y 50 %** de las mediciones.
+:::
+::::::
+
+```{=html}
+<div class="flow-strip">
+  <div class="flow-node"><b>Escena</b><span>24 vistas de Truck</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node"><b>Cámara de un píxel</b><span>simulada, r = 5 – 50 %</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node"><b>Vistas 2D</b><span>directa o TV</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node"><b>3D Gaussian Splatting</b><span>21 vistas de entrenamiento</span></div>
+</div>
+```
+
+::: notes
+El problema es de costo: la cámara de un píxel es barata en el sensor, pero cada imagen exige una secuencia de mediciones. Ese costo se multiplica en 3D, porque 3DGS necesita muchas vistas. La brecha es que no está cuantificado cuánto de la pérdida 2D llega al modelo 3D. El objetivo es medirlo de forma controlada.
+:::
+
+## Cuatro preguntas y un objetivo medible
+
+::: eyebrow
+Preguntas y objetivos específicos
+:::
+
+```{=html}
+<div class="q-grid">
+  <div class="q-card"><span class="q-n">1</span><p><strong>Rejilla y razón.</strong> ¿Cuánta calidad 2D se pierde al bajar de 50 a 5 % de las mediciones, y cuánto es culpa de la rejilla?</p></div>
+  <div class="q-card"><span class="q-n">2</span><p><strong>Patrón y método.</strong> ¿Importan el patrón (Hadamard, aleatorio, DCT) y la reconstrucción (directa o TV)?</p></div>
+  <div class="q-card"><span class="q-n">3</span><p><strong>Del 2D al 3D.</strong> ¿Cuánto de la degradación 2D llega al modelo 3DGS entrenado con esas vistas?</p></div>
+  <div class="q-card"><span class="q-n">4</span><p><strong>Costo.</strong> ¿Cuánto tiempo y memoria cuesta cada etapa en una GPU de portátil?</p></div>
+</div>
+<div class="points"><p class="fragment"><strong>Regla del estudio:</strong> toda calidad se mide contra la <strong>imagen original</strong>, nunca contra una degradada, y con dos referencias: un <strong>control</strong> (solo remuestreo, sin cámara) y un <strong>baseline</strong> (3DGS con imágenes originales).</p></div>
+```
+
+::: notes
+Son cuatro preguntas. Las dos primeras son de 2D, la tercera es el puente al 3D y la cuarta es de costo. La regla del estudio es lo que hace comparables todos los resultados: siempre contra la imagen original, y con un control y un baseline que acotan lo que se puede esperar.
+:::
+
+## Hipótesis
+
+::: eyebrow
+Lo que esperábamos encontrar
+:::
+
+```{=html}
+<div class="hyp-grid">
+  <div class="hyp-card"><span class="hyp-id">H1</span><p><strong>La calidad 2D cae de forma monótona</strong> al reducir las mediciones, y la <strong>rejilla</strong> fija el techo.</p></div>
+  <div class="hyp-card"><span class="hyp-id">H2</span><p><strong>La TV mejora a la reconstrucción directa</strong>, y es imprescindible con patrones aleatorios.</p></div>
+  <div class="hyp-card"><span class="hyp-id">H3</span><p><strong>Hadamard</strong> iguala o supera a otros órdenes; el aleatorio con TV <strong>se acerca a razones altas</strong>.</p></div>
+  <div class="hyp-card"><span class="hyp-id">H4</span><p><strong>3DGS hereda la degradación 2D</strong> en las vistas con que se entrena: ni la corrige ni la amplifica.</p></div>
+  <div class="hyp-card"><span class="hyp-id">H5</span><p>Con <strong>pocas vistas de prueba</strong> el PSNR 3D no discrimina; con <strong>muchas vistas reservadas</strong> sí, y las condiciones buenas igualan al baseline.</p></div>
+</div>
+```
+
+::: notes
+Planteamos cinco hipótesis antes de ver los resultados finales. H1 y H2 son de 2D. H3 compara patrones. H4 y H5 son del paso a 3D: H4 dice que el modelo hereda el error de sus imágenes de entrada, y H5 dice que la evaluación con tres vistas de prueba es poco sensible. Al final volvemos a esta lámina con el veredicto de cada una.
+:::
+
+## Una cámara de un píxel mide un producto interno por patrón
+
+::: eyebrow
+Fundamentos · Modelo de medición
+:::
+
+```{=html}
+<div class="flow-strip">
+  <div class="flow-node"><b>Escena x</b><span>imagen de N píxeles</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node"><b>Patrón Φₖ</b><span>mostrado en un DMD</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node"><b>Un fotodetector</b><span>suma la luz</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node"><b>Medición yₖ</b><span>un número por patrón</span></div>
+</div>
+```
+
+:::::: eq-row
+::: equation-card
+[Medición con K patrones, razón r = K/N]{.eq-label}
+
+$$\mathbf{y}=\mathbf{\Phi}\mathbf{x}+\mathbf{n},\qquad \mathbf{\Phi}\in\mathbb{R}^{K\times N},\quad r=\tfrac{K}{N}$$
+:::
+
+::: {.points}
+Las filas de $\mathbf{\Phi}$ son **ortonormales** ($\mathbf{\Phi}\mathbf{\Phi}^{\top}=\mathbf{I}$) y **separables**, así que no se guarda la matriz: se aplica con transformadas rápidas.
+:::
+::::::
+
+::: notes
+Cada patrón produce un solo número, el producto interno entre el patrón y la escena. Con K patrones se obtiene un vector y de K componentes. Como los patrones son ortonormales y separables, nunca construimos la matriz: se aplica con una transformada rápida en la GPU.
+:::
+
+## Tres familias de patrones: Hadamard, aleatorio y DCT
+
+::: eyebrow
+Fundamentos · Patrones
+:::
+
+::::: fig-row
+:::: {.image-frame}
+![](images/fig_patterns.png){fig-alt="Cinco patrones de Hadamard de frecuencia creciente (arriba) y cinco patrones binarios aleatorios (abajo)."}
+
+::: image-caption
+Hadamard por secuencia (arriba) y aleatorio binario (abajo).
+:::
+::::
+:::::
+
+::::: {.points .points-row}
+::: fragment
+**Hadamard:** binario ±1, se miden primero las **bajas frecuencias**. **Aleatorio:** Hadamard con píxeles permutados; siempre se mide el nivel medio (DC).
+:::
+
+::: fragment
+**DCT:** referencia no binaria. Un DMD real solo muestra 0/1, así que ±1 se obtiene con dos patrones complementarios.
+:::
+:::::
+
+::: notes
+Hadamard es la base binaria clásica; la ordenamos por frecuencia y medimos primero las bajas. El aleatorio es un Hadamard con los píxeles permutados y un subconjunto elegido al azar; siempre medimos el patrón constante, porque sin él el nivel medio queda indeterminado. La DCT es solo una referencia no binaria.
+:::
+
+## Dos formas de reconstruir: directa y con variación total
+
+::: eyebrow
+Fundamentos · Reconstrucción
+:::
+
+:::::: eq-row
+::: equation-card
+[Directa: mínima norma, ceros en lo no medido]{.eq-label}
+
+$$\hat{\mathbf{x}}=\mathbf{\Phi}^{\top}\mathbf{y}$$
+
+[Variación total (TV), con FISTA]{.eq-label}
+
+$$\hat{\mathbf{x}}=\arg\min_{\mathbf{x}}\ \tfrac12\|\mathbf{\Phi}\mathbf{x}-\mathbf{y}\|_2^2+\lambda\,\mathrm{TV}(\mathbf{x})$$
+:::
+
+::: points
+**Directa:** instantánea, pero deja el error repartido por la imagen.
+
+**TV:** supone imágenes con **bordes nítidos y zonas suaves**. Proximal de Chambolle, 100 iteraciones, $\lambda=0.003$ (elegido con un barrido en una vista aparte).
+:::
+::::::
+
+::: notes
+La reconstrucción directa es la solución de mínima norma: rellena con ceros lo no medido. La TV agrega un a priori: las imágenes naturales tienen poca variación total. Se resuelve con FISTA y el proximal de Chambolle; usamos 100 iteraciones y lambda 0,003, elegido con un barrido en una vista que no está entre las 24 del experimento.
+:::
+
+## Flujo experimental: siempre se compara contra el original
+
+::: eyebrow
+Metodología
+:::
+
+```{=html}
+<div class="pipe-row">
+  <div class="pipe-step"><b>1</b><strong>Vista original</strong><span>979 × 546</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="pipe-step"><b>2</b><strong>Remuestreo a la rejilla</strong><span>256 × 512 o 512 × 1024</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="pipe-step"><b>3</b><strong>Medir y reconstruir</strong><span>patrón × método × razón</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="pipe-step"><b>4</b><strong>Volver a 979 × 546</strong><span>JPEG calidad 100</span></div>
+</div>
+<div class="pipe-row">
+  <div class="pipe-step alt"><b>5</b><strong>Entrenar 3DGS</strong><span>21 vistas, gsplat</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="pipe-step alt"><b>6</b><strong>Renderizar</strong><span>3 + 230 + 21 vistas</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="pipe-step alt"><b>7</b><strong>Comparar con el original</strong><span>PSNR, SSIM, LPIPS</span></div>
+</div>
+<div class="points"><p class="fragment"><strong>Control:</strong> pasos 1, 2 y 4, sin cámara (aísla la pérdida de la rejilla). <strong>Baseline:</strong> 3DGS con las imágenes originales (el techo del 3D).</p></div>
+```
+
+::: notes
+Este es el flujo completo. Una vista original se remuestrea a la rejilla, se mide con la cámara simulada, se reconstruye y se devuelve al tamaño original. Con esas imágenes se entrena 3DGS usando las mismas cámaras COLMAP del original, y se renderiza para comparar siempre contra la imagen original. El control salta la cámara y el baseline salta todo el bloque de la cámara.
+:::
+
+## Diseño experimental y entorno de cómputo
+
+::: eyebrow
+Metodología · Datos y recursos
+:::
+
+```{=html}
+<table class="table-roomy" aria-label="Diseño experimental">
+<thead><tr><th>Elemento</th><th>Valor</th></tr></thead>
+<tbody>
+<tr><td>Escena</td><td>Truck (Tanks and Temples), 251 imágenes de 979 × 546, poses COLMAP</td></tr>
+<tr><td>Vistas</td><td>24 equiespaciadas: 21 de entrenamiento y 3 de prueba (+ 230 reservadas para evaluar)</td></tr>
+<tr><td>Rejillas</td><td>256 × 512 (25 % de los píxeles, principal) y 512 × 1024 (98 %, 2D)</td></tr>
+<tr><td>Condiciones</td><td>3 patrones × 2 métodos × 4 razones + control + baseline; semilla 449</td></tr>
+<tr><td>3DGS</td><td>gsplat 1.5.3, SH grado 3, 3000 y 7000 iteraciones (30 000 en baseline y control)</td></tr>
+<tr><td>Validación</td><td>Baseline con 251 vistas: 23,54 dB, SSIM 0,848, LPIPS 0,242 (artículo: 23,51; 0,840; 0,209)</td></tr>
+<tr><td>Hardware</td><td>NVIDIA RTX 4060 Laptop 8 GB, driver 571.96, Windows 11 + WSL2 Ubuntu 24.04, CUDA 12.8</td></tr>
+</tbody>
+</table>
+```
+
+::: notes
+Las 24 vistas son equiespaciadas; tres son de prueba y las otras 21 entrenan. Además usamos 230 vistas que ningún modelo vio, solo para evaluar. Todo corrió en una GPU de portátil de 8 GB. Los números 3D vienen de WSL con gsplat 1.5.3; la semilla es 449 en todo.
+:::
+
+## 2D: con Hadamard y TV, medir el 50 % cuesta menos de 1 dB
+
+::: eyebrow
+Resultados 2D · PSNR (dB), 24 vistas
+:::
+
+```{=html}
+<table class="table-roomy" aria-label="PSNR 2D por patrón, método y razón en las dos rejillas">
+<thead>
+<tr><th rowspan="2">Patrón · método</th><th colspan="4" class="group-start">Rejilla 256 × 512</th><th colspan="4" class="group-start">Rejilla 512 × 1024</th></tr>
+<tr><th class="group-start">5 %</th><th>10 %</th><th>25 %</th><th>50 %</th><th class="group-start">5 %</th><th>10 %</th><th>25 %</th><th>50 %</th></tr>
+</thead>
+<tbody>
+<tr><td>Hadamard · directa</td><td class="group-start">20,63</td><td>21,89</td><td>23,92</td><td>25,92</td><td class="group-start">23,17</td><td>25,04</td><td>28,48</td><td>33,12</td></tr>
+<tr class="ours"><td>Hadamard · TV</td><td class="group-start">21,52</td><td>22,89</td><td>24,87</td><td>26,33</td><td class="group-start">24,54</td><td>26,72</td><td>30,54</td><td>34,39</td></tr>
+<tr><td>Aleatorio · directa</td><td class="group-start">12,65</td><td>12,93</td><td>13,87</td><td>15,82</td><td class="group-start">12,68</td><td>13,00</td><td>14,03</td><td>16,24</td></tr>
+<tr><td>Aleatorio · TV</td><td class="group-start">20,35</td><td>21,89</td><td>24,39</td><td>26,12</td><td class="group-start">23,21</td><td>25,49</td><td>29,74</td><td>33,71</td></tr>
+<tr><td>DCT · TV</td><td class="group-start best">21,80</td><td class="best">23,18</td><td class="best">25,17</td><td class="best">26,49</td><td class="group-start best">24,99</td><td class="best">27,31</td><td class="best">31,33</td><td>34,99</td></tr>
+<tr class="baseline"><td>Control (sin cámara)</td><td colspan="4" class="group-start">27,22</td><td colspan="4" class="group-start">38,00</td></tr>
+</tbody>
+</table>
+<div class="table-legend"><span><i class="best"></i>Mejor de la columna (la DCT no es binaria, es referencia).</span></div>
+```
+
+::::: result-foot
+::: {.result-stat .fragment}
+[5,70 → 0,89 dB]{.stat-value}
+
+[pérdida vs. control, Hadamard + TV, 5 → 50 %]{.stat-label}
+:::
+
+::: fragment
+La **TV** mejora a la directa en **0,4 a 1,0 dB** (256 × 512) y en **1,3 a 2,1 dB** (512 × 1024).
+:::
+:::::
+
+::: notes
+En 256 por 512, Hadamard con TV pierde 5,70; 4,33; 2,35 y 0,89 dB respecto del control al 5, 10, 25 y 50 por ciento. La TV mejora a la directa en todas las razones. El patrón aleatorio sin regularización es inservible, entre 12,7 y 15,8 dB, y con TV llega a 20,4 a 26,1 dB. Esto confirma H1 y H2.
+:::
+
+## 2D: el aleatorio solo funciona con TV, y 25 % ya recupera los bordes {.stack-figs}
+
+::: eyebrow
+Resultados 2D · Curvas y comparación visual
+:::
+
+::::: fig-row
+:::: {.image-frame}
+![](images/fig_2d_metrics.png){fig-alt="PSNR en las dos rejillas y LPIPS en 256 por 512, frente a la razón de medición, para Hadamard y aleatorio con reconstrucción directa y TV."}
+
+::: image-caption
+Calidad frente a la razón de medición. Línea punteada: control.
+:::
+::::
+:::::
+
+:::: {.image-frame}
+![](images/fig_2d_visual.png){fig-alt="Vista 000208 de Truck: original, control, Hadamard con TV a 5, 10, 25 y 50 por ciento, Hadamard directa al 10 por ciento, aleatorio directa y aleatorio con TV al 25 por ciento."}
+
+::: image-caption
+Vista 000208, rejilla 256 × 512. La directa aleatoria es ruido; con TV se recuperan tablas y rueda.
+:::
+::::
+
+::: notes
+La figura de arriba resume las curvas de PSNR en las dos rejillas y el LPIPS. Abajo, la misma vista con distintas condiciones: con Hadamard y TV, desde el 25 por ciento se recuperan las tablas de la caja y la rueda. El aleatorio con reconstrucción directa es solo ruido, y con TV se parece a Hadamard.
+:::
+
+## El techo lo fija la rejilla: 27,2 dB frente a 38,0 dB sin cámara
+
+::: eyebrow
+Resultados 2D · Por qué importa el control
+:::
+
+```{=html}
+<table class="table-roomy" aria-label="Control según rejilla y resolución de evaluación">
+<thead><tr><th>Rejilla</th><th>Píxeles vs. imagen</th><th>Evaluado a 979 × 546, JPEG q100</th><th>Evaluado a la resolución de la rejilla</th></tr></thead>
+<tbody>
+<tr><td>256 × 512</td><td>25 %</td><td class="best">27,22</td><td>35,21</td></tr>
+<tr><td>512 × 1024</td><td>98 %</td><td class="best">38,00</td><td>34,75</td></tr>
+</tbody>
+</table>
+```
+
+:::::: points-row
+::: fragment
+**La rejilla manda:** con 256 × 512 se descarta el 75 % de los píxeles y se pierden los detalles finos. El JPEG de calidad 100 cuesta solo **0,02 a 0,14 dB**.
+:::
+
+::: fragment
+**Evaluar a la resolución de la rejilla engaña:** daría 35,21 dB. Por eso se evalúa **siempre a resolución completa**.
+:::
+::::::
+
+::: notes
+Un informe anterior daba unos 38 dB para el control, que no coincidía con nuestros 27 dB. La causa es la rejilla: con 512 por 1024 se conserva el 98 por ciento de los píxeles. Si evaluáramos a la resolución de la rejilla, el control a 256 por 512 daría 35 dB, un número engañoso. Por eso siempre se evalúa a resolución completa y siempre se reporta el control.
+:::
+
+## Orden de Hadamard: efecto pequeño; ruido: depende del modelo del detector
+
+::: eyebrow
+Resultados 2D · Hadamard por secuencia vs. cake-cutting
+:::
+
+```{=html}
+<table class="table-roomy" aria-label="Orden de Hadamard en 512 por 1024">
+<thead><tr><th>Orden · método (PSNR dB, 512 × 1024)</th><th>5 %</th><th>10 %</th><th>25 %</th><th>50 %</th></tr></thead>
+<tbody>
+<tr><td>Secuencia · directa</td><td>23,17</td><td>25,05</td><td>28,48</td><td>33,12</td></tr>
+<tr><td>Cake-cutting · directa</td><td>22,81</td><td>24,74</td><td>28,46</td><td>32,89</td></tr>
+<tr class="ours"><td>Secuencia · TV</td><td>24,54</td><td>26,72</td><td>30,54</td><td>34,39</td></tr>
+<tr><td>Cake-cutting · TV</td><td>23,94</td><td>26,06</td><td>30,00</td><td>33,96</td></tr>
+</tbody>
+</table>
+```
+
+:::::: points-row
+::: fragment
+El orden por **secuencia** iguala o supera al cake-cutting: entre **0,0 y 0,6 dB**, con mayor ventaja a razones bajas.
+:::
+
+::: fragment
+Con un **DMD real** ({0,1} + DC) y $10^7$ fotones, Hadamard + TV pierde **2,3 dB** y el aleatorio + TV **3,5 dB**; con $10^9$ fotones, a lo más 0,11 dB. Con ruido sobre coeficientes ±1 casi no hay efecto (≤ 0,01 dB).
+:::
+::::::
+
+::: notes
+Comparamos dos ordenes de los mismos coeficientes de Hadamard: por secuencia y cake-cutting. El de secuencia es igual o mejor, por hasta 0,6 dB. También estudiamos el ruido con un modelo de DMD real, de máscaras 0 y 1 más una medición DC: con 1e9 fotones la pérdida es de a lo más 0,11 dB, pero con 1e7 fotones llega a 2,3 dB en Hadamard con TV y 3,5 dB en aleatorio con TV. Si el ruido se aplica a los coeficientes ideales de más y menos uno, casi no hay efecto, porque el ruido de disparo es proporcional a la señal y los coeficientes son pequeños frente al DC.
+:::
+
+## 3D: con tres vistas de prueba, el PSNR casi no separa las condiciones
+
+::: eyebrow
+Resultados 3D · Vistas de prueba, 7000 iteraciones
+:::
+
+::::: fig-row
+:::: {.image-frame}
+![](images/fig_3d_test.png){fig-alt="PSNR, SSIM y LPIPS de 3DGS en las tres vistas de prueba, frente a la razón de medición."}
+
+::: image-caption
+3DGS en 3 vistas de prueba, rejilla 256 × 512, contra las imágenes originales.
+:::
+::::
+:::::
+
+::::: {.points .points-row}
+::: fragment
+Salvo el aleatorio directo, todo cae **entre 17,2 y 18,3 dB**, y el control y algunas condiciones superan al baseline (17,72 dB).
+:::
+
+::: fragment
+Con 3 vistas no es concluyente: solo **17 de 42** comparaciones de PSNR lo son (SSIM: 31; LPIPS: 36). **SSIM y LPIPS sí ordenan** las condiciones.
+:::
+:::::
+
+::: notes
+Con solo tres vistas de prueba el PSNR no distingue casi nada: todas las condiciones, salvo el aleatorio directo, quedan entre 17 y 18,6 dB. Hicimos un análisis de variabilidad con otras semillas, que da una desviación de 0,09 a 0,12 dB en el PSNR de prueba, y calculamos intervalos de confianza por vista: solo 17 de 42 comparaciones son concluyentes en PSNR. SSIM y LPIPS sí ordenan las condiciones de forma monótona.
+:::
+
+## 3D: con 230 vistas reservadas, Hadamard + TV al 50 % iguala al baseline
+
+::: eyebrow
+Resultados 3D · PSNR (dB) en tres conjuntos de vistas
+:::
+
+```{=html}
+<table class="table-roomy" aria-label="PSNR 3D en vistas de prueba, reservadas y de entrenamiento">
+<thead>
+<tr><th rowspan="2">Condición (7000 it.)</th><th colspan="2" class="group-start">Prueba (3 vistas)</th><th colspan="2" class="group-start">Reservadas (230)</th><th colspan="2" class="group-start">Entrenamiento (21)</th></tr>
+<tr><th class="group-start">5 %</th><th>50 %</th><th class="group-start">5 %</th><th>50 %</th><th class="group-start">5 %</th><th>50 %</th></tr>
+</thead>
+<tbody>
+<tr class="baseline"><td>Baseline (originales)</td><td colspan="2" class="group-start">17,72</td><td colspan="2" class="group-start">19,40</td><td colspan="2" class="group-start">32,51</td></tr>
+<tr class="baseline"><td>Control (sin cámara)</td><td colspan="2" class="group-start">18,25</td><td colspan="2" class="group-start">19,48</td><td colspan="2" class="group-start">26,63</td></tr>
+<tr><td>Hadamard · directa</td><td class="group-start">17,18</td><td>18,08</td><td class="group-start">17,77</td><td>19,27</td><td class="group-start">20,63</td><td>25,66</td></tr>
+<tr class="ours"><td>Hadamard · TV</td><td class="group-start">17,81</td><td>18,07</td><td class="group-start">18,26</td><td class="best">19,38</td><td class="group-start">21,48</td><td>25,90</td></tr>
+<tr><td>Aleatorio · directa</td><td class="group-start">12,13</td><td>13,41</td><td class="group-start">12,31</td><td>13,97</td><td class="group-start">12,75</td><td>16,08</td></tr>
+<tr><td>Aleatorio · TV</td><td class="group-start">17,27</td><td>18,16</td><td class="group-start">17,53</td><td class="best">19,40</td><td class="group-start">20,32</td><td>25,73</td></tr>
+</tbody>
+</table>
+```
+
+::::: result-foot
+::: {.result-stat .fragment}
+[19,38 vs. 19,40 dB]{.stat-value}
+
+[Hadamard + TV al 50 % vs. baseline, en 230 vistas reservadas]{.stat-label}
+:::
+
+::: fragment
+Con **muchas vistas reservadas** sube la sensibilidad: de 18,26 dB (5 %) a 19,38 dB (50 %). En SSIM y LPIPS el baseline sigue mejor (0,732 y 0,302 frente a 0,677 y 0,410).
+:::
+:::::
+
+::: notes
+Las 230 vistas que ningún modelo usó para entrenar dan un orden mucho más limpio: Hadamard con TV sube de 18,26 dB con 5 por ciento a 19,38 con 50 por ciento, lo que iguala al baseline, 19,40. El aleatorio con TV llega al mismo valor. Esto es lo que sustenta H5. En SSIM y LPIPS el baseline todavía es mejor, así que no decimos que sean idénticos.
+:::
+
+## Con la rejilla fina, 10 % de las mediciones ya iguala al baseline, y el 3D se satura
+
+::: eyebrow
+Resultados 3D · Rejilla 512 × 1024, 7000 iteraciones
+:::
+
+```{=html}
+<table class="table-roomy" aria-label="3DGS en rejilla 512 por 1024: PSNR en vistas reservadas y de entrenamiento">
+<thead>
+<tr><th rowspan="2">Condición</th><th colspan="4" class="group-start">Reservadas (230 vistas), PSNR dB</th><th colspan="2" class="group-start">Entrenamiento, 50 %</th></tr>
+<tr><th class="group-start">5 %</th><th>10 %</th><th>25 %</th><th>50 %</th><th class="group-start">2D</th><th>3D</th></tr>
+</thead>
+<tbody>
+<tr class="baseline"><td>Baseline (originales)</td><td colspan="4" class="group-start">19,40</td><td class="group-start">—</td><td>32,51</td></tr>
+<tr class="baseline"><td>Control (sin cámara)</td><td colspan="4" class="group-start">19,47</td><td class="group-start">37,90</td><td>31,69</td></tr>
+<tr><td>Hadamard · directa</td><td class="group-start">18,64</td><td>19,02</td><td>19,39</td><td>19,52</td><td class="group-start">33,04</td><td>30,64</td></tr>
+<tr class="ours"><td>Hadamard · TV</td><td class="group-start">19,02</td><td class="best">19,36</td><td class="best">19,54</td><td class="best">19,54</td><td class="group-start">34,30</td><td>30,99</td></tr>
+<tr><td>Aleatorio · TV</td><td class="group-start">18,47</td><td>19,11</td><td>19,48</td><td class="best">19,58</td><td class="group-start">33,64</td><td>30,48</td></tr>
+</tbody>
+</table>
+```
+
+::::: result-foot
+::: {.result-stat .fragment}
+[10 %]{.stat-value}
+
+[Hadamard + TV: 19,36 dB vs. baseline 19,40 dB]{.stat-label}
+:::
+
+::: fragment
+**El 3D se satura:** con 21 vistas y 7000 iteraciones el baseline solo llega a **32,51 dB**, así que el 3D no reproduce un 2D de 34 a 38 dB (−3,3 y −6,2 dB). Con 2D bajo ~28,5 dB sí lo reproduce (±0,35 dB; correlación 0,985).
+:::
+:::::
+
+::: notes
+En la rejilla de 512 por 1024 los modelos con cámara alcanzan al baseline antes: Hadamard con TV llega a 19,36 dB con solo 10 por ciento de las mediciones, contra 19,40 del baseline, y a 19,54 con 25 y 50 por ciento. Son diferencias de décimas de decibel, así que lo leemos como igual al baseline y no como mejora. En las vistas de entrenamiento aparece un matiz importante: el modelo 3D reproduce el PSNR 2D mientras este está bajo unos 28,5 dB, pero se satura cerca de 31 a 32 dB, que es lo que alcanza el propio baseline. Por eso, con la rejilla fina, el control pasa de 37,9 dB en 2D a 31,7 dB en 3D.
+:::
+
+## 3D: el modelo hereda la degradación 2D y se sobreajusta con más iteraciones
+
+::: eyebrow
+Resultados 3D · De la calidad 2D a la 3D
+:::
+
+::::: fig-row
+:::: {.image-frame}
+![](images/fig_2d_to_3d.png){fig-alt="PSNR 2D de las 21 vistas de entrenamiento frente al PSNR del render 3DGS de las mismas vistas; los puntos siguen la diagonal."}
+
+::: image-caption
+7000 iteraciones, rejilla 256 × 512. Línea punteada: y = x.
+:::
+::::
+:::::
+
+::::: {.points .points-row}
+::: fragment
+**Herencia (H4):** Hadamard + TV da 21,48 dB al 5 % (2D: 21,52) y 25,90 dB al 50 % (2D: 26,33). Los puntos caen sobre la **diagonal**.
+:::
+
+::: fragment
+**Sobreajuste:** el baseline sube de 28,81 a 32,51 y 40,23 dB en entrenamiento (3000, 7000, 30 000 it.) y **baja en prueba**: 17,97 → 17,72 → 17,20 dB.
+:::
+:::::
+
+::: notes
+Cuando se mide sobre las 21 vistas de entrenamiento, el PSNR 3D prácticamente reproduce el 2D: los puntos están en la diagonal. Es decir, 3DGS no corrige ni amplifica la degradación de sus imágenes de entrada. Además, el baseline se ajusta cada vez mejor a esas vistas con más iteraciones y empeora en prueba, que es consistente con sobreajuste a 21 vistas.
+:::
+
+## Costo: la TV cuesta ~1–1,7 s por vista; cada corrida 3D, minutos
+
+::: eyebrow
+Resultados · Tiempo y memoria (RTX 4060 Laptop, 8 GB)
+:::
+
+```{=html}
+<table class="table-roomy" aria-label="Tiempo y memoria por etapa">
+<thead><tr><th>Etapa</th><th>Configuración</th><th>Tiempo</th></tr></thead>
+<tbody>
+<tr><td>2D directa</td><td>256 × 512 y 512 × 1024</td><td>≤ 7 ms por vista</td></tr>
+<tr><td>2D con TV (100 it.)</td><td>256 × 512</td><td>0,99 – 1,27 s por vista</td></tr>
+<tr><td>2D con TV (100 it.)</td><td>512 × 1024, Hadamard</td><td>1,69 – 1,75 s por vista</td></tr>
+<tr><td>3DGS 3000 iteraciones</td><td>todas las condiciones</td><td>63 – 90 s por corrida</td></tr>
+<tr><td>3DGS 7000 iteraciones</td><td>todas las condiciones</td><td>146 – 363 s por corrida</td></tr>
+<tr><td>3DGS 30 000 iteraciones</td><td>baseline / control</td><td>3495 s / 1140 s</td></tr>
+</tbody>
+</table>
+```
+
+:::::: points-row
+::: fragment
+**Gaussianas:** el baseline pasa de 0,78 M a 2,49 M (3000 → 30 000 it.). Con TV, **0,29 a 0,61 M**; el aleatorio directo llega a **1,89 M** porque ajusta ruido.
+:::
+
+::: fragment
+**Memoria máxima:** 4,25 GiB en las condiciones SPC y 5,65 GiB en el baseline a 30 000 iteraciones.
+:::
+::::::
+
+::: notes
+La reconstrucción directa toma milisegundos y la TV entre uno y dos segundos por vista. Cada corrida de 3DGS toma entre uno y seis minutos según las iteraciones. Hubo una corrida atípica de 1213 s que atribuimos al equipo, y no la repetimos. Un dato interesante: la TV produce modelos con menos gaussianas, porque elimina el ruido que otras condiciones intentan ajustar.
+:::
+
+## Veredicto: las cinco hipótesis se sostienen, H4 con un matiz
+
+::: eyebrow
+Hipótesis frente a resultados
+:::
+
+```{=html}
+<table class="table-roomy" aria-label="Hipótesis y evidencia">
+<thead><tr><th>Hipótesis</th><th>Evidencia</th><th>Veredicto</th></tr></thead>
+<tbody>
+<tr><td>H1 · la calidad cae de forma monótona; la rejilla fija el techo</td><td>Pérdida 5,70 → 0,89 dB vs. control; control 27,22 vs. 38,00 dB</td><td class="best">Sostenida</td></tr>
+<tr><td>H2 · TV mejora a la directa; el aleatorio la necesita</td><td>+0,4 a +1,0 dB; aleatorio 12,7–15,8 → 20,4–26,1 dB</td><td class="best">Sostenida</td></tr>
+<tr><td>H3 · Hadamard iguala o supera; el aleatorio con TV se acerca</td><td>0,0–0,6 dB sobre cake-cutting; brecha 0,21 dB al 50 %</td><td class="second">Sostenida (efecto pequeño)</td></tr>
+<tr><td>H4 · 3DGS hereda la degradación 2D</td><td>256 × 512: ±0,5 dB. 512 × 1024: igual hasta ~28,5 dB; se satura en 31–32 dB</td><td class="second">Sostenida con matiz</td></tr>
+<tr><td>H5 · pocas vistas no discriminan; muchas vistas sí</td><td>17 de 42 comparaciones concluyentes; 19,38 vs. 19,40 dB en 230 vistas</td><td class="best">Sostenida</td></tr>
+</tbody>
+</table>
+<div class="table-legend"><span>«Sostenida» significa que los datos no la contradicen en Truck, con una semilla principal; no es una prueba general.</span></div>
+```
+
+::: notes
+Volviendo a las hipótesis: las cinco se sostienen con los datos de Truck. Conviene ser cuidadosos con el lenguaje: sostenida quiere decir que los datos no la contradicen en una escena y con una semilla principal, no que sea una ley general. H3 es la más débil: el efecto es de décimas de decibel.
+:::
+
+## Limitaciones y trabajo futuro
+
+::: eyebrow
+Análisis crítico
+:::
+
+:::::: closing-points
+::: fragment
+[Limitaciones]{.kicker}
+
+**Una escena y una semilla.** Solo 21 vistas de entrenamiento y 3 de prueba. Poses COLMAP **del original** (cota optimista). Óptica simulada sobre imágenes ya capturadas.
+:::
+
+::: fragment
+[Por cerrar]{.kicker}
+
+**Baseline validado** con 251 vistas: 23,54 dB, SSIM 0,848, LPIPS 0,242 (artículo: 23,51, 0,840, 0,209). No se corrió la implementación oficial. Ruido solo en 2D (hasta −3,5 dB con 1e7 fotones).
+:::
+
+::: fragment
+[Trabajo futuro]{.kicker}
+
+Más escenas y semillas, **re-estimar poses** desde las vistas SPC, entrenar 3DGS **directamente con las mediciones** y patrones distintos por vista.
+:::
+::::::
+
+::: notes
+Las limitaciones principales: una sola escena y una semilla, pocas vistas, y que las poses vienen de las imágenes originales, de modo que el 3D es una cota optimista. Lo que falta cerrar: repetir con más escenas y semillas, y comparar con la implementación oficial de 3DGS. El trabajo futuro apunta a re-estimar poses y a entrenar directamente con las mediciones.
+:::
+
+## Conclusión: medir menos cuesta poco con Hadamard y TV, y el 3D lo hereda
+
+::: eyebrow
+Conclusión y preguntas
+:::
+
+:::::: closing-points
+::: fragment
+[En 2D]{.kicker}
+
+Hadamard + TV pierde **5,70 dB** al 5 % y **0,89 dB** al 50 % frente al control. Sin TV, el aleatorio no sirve.
+:::
+
+::: fragment
+[En 3D]{.kicker}
+
+3DGS **hereda** la degradación 2D. Con 230 vistas reservadas, el 50 % **iguala** al baseline (19,38 vs. 19,40 dB).
+:::
+
+::: fragment
+[Mensaje]{.kicker}
+
+Una **evaluación con pocas vistas de prueba engaña**: usar muchas vistas reservadas, SSIM/LPIPS y varias semillas.
+:::
+::::::
+
+:::: closing-row
+
+::: {.image-frame}
+![](images/fig_3d_renders.png){fig-alt="Renders de prueba: imagen original, baseline, control, Hadamard con TV al 5 y 50 por ciento y aleatorio con TV al 5 por ciento."}
+
+::: image-caption
+Renders de prueba (7000 it.): original, baseline, control, Hadamard + TV 5 % y 50 %, aleatorio + TV 5 %.
+:::
+:::
+
+::: closing-qa
+[Gracias]{.qa-big}
+
+Preguntas
+
+github.com/fralfaro/spc-gs
+:::
+::::
+
+::: notes
+Para cerrar: en 2D, Hadamard con TV pierde 5,7 dB con el 5 por ciento de las mediciones y menos de 1 dB con el 50 por ciento. En 3D, el modelo hereda esa degradación, y con 230 vistas reservadas el 50 por ciento iguala al baseline. El mensaje práctico: evaluar con pocas vistas de prueba puede engañar. Muchas gracias; quedo atento a sus preguntas.
+
+**Preguntas probables**
+
+**¿Por qué el PSNR de prueba no separa las condiciones?** Son solo 3 vistas; hay artefactos flotantes comunes a todas las condiciones, incluido el baseline, y la desviación por semilla es de 0,09 a 0,12 dB.
+
+**¿Está validado el baseline?** Con el protocolo de 251 vistas da 23,54 dB y SSIM 0,848, casi igual al artículo (23,51 y 0,840); el LPIPS es 0,033 mayor y no investigamos por qué. El 17,72 dB del baseline principal corresponde al régimen de pocas vistas.
+
+**¿Por qué dos rejillas?** 256 × 512 descarta el 75 % de los píxeles y 512 × 1024 conserva el 98 %. En 3D, la rejilla fina iguala al baseline desde el 10 % de las mediciones, pero el 3D se satura en 31–32 dB.
+
+**¿Y el ruido?** Está apagado en los resultados principales. En 2D, con un modelo de DMD real, 1e9 fotones cuesta a lo más 0,11 dB y 1e7 fotones cuesta 2,3 dB (Hadamard + TV) a 3,5 dB (aleatorio + TV). No se estudió en 3D.
+:::
+
+## Referencias {visibility="uncounted"}
+
+::: eyebrow
+Respaldo
+:::
+
+::: references
+**\[1\]** Duarte et al., «Single-pixel imaging via compressive sampling», *IEEE Signal Process. Mag.*, 2008.
+
+**\[2\]** Edgar et al., «Principles and prospects for single-pixel imaging», *Nature Photonics*, 2019.
+
+**\[3\]** Yu et al., «Super sub-Nyquist single-pixel imaging by cake-cutting Hadamard basis sort», *Sensors*, 2019.
+
+**\[4\]** Rudin, Osher y Fatemi, «Nonlinear total variation based noise removal algorithms», *Physica D*, 1992.
+
+**\[5\]** Beck y Teboulle, «A fast iterative shrinkage-thresholding algorithm», *SIAM J. Imaging Sci.*, 2009.
+
+**\[6\]** Chambolle, «An algorithm for total variation minimization and applications», *J. Math. Imaging Vis.*, 2004.
+
+**\[7\]** Kerbl et al., «3D Gaussian Splatting for Real-Time Radiance Field Rendering», *ACM TOG*, 2023.
+
+**\[8\]** Ye et al., «gsplat: An open-source library for Gaussian splatting», arXiv:2409.06765, 2024.
+
+**\[9\]** Knapitsch et al., «Tanks and Temples», *ACM TOG*, 2017.
+
+**\[10\]** Wang et al., «Image quality assessment: from error visibility to structural similarity», *IEEE TIP*, 2004.
+
+**\[11\]** Zhang et al., «The unreasonable effectiveness of deep features as a perceptual metric», CVPR, 2018.
+:::
+
+::: notes
+Respaldo: no se presenta salvo que pidan una referencia. Las entradas se escribieron de memoria y deben verificarse contra la fuente.
+:::

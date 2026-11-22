@@ -1,0 +1,4 @@
+experimento,escena,condicion,tipo,patron,metodo,razon,rejilla,mediciones,semilla,lam_tv,iter_tv,iter_prox,ruido,origen,conjunto,n_vistas,PSNR,SSIM,LPIPS,PSNR_rejilla,SSIM_rejilla
+truck_baseline_validacion,truck,control_256x512,control,control,-,1.000000,256x512,0,449,,,,no,generada,todas,251,27.349820,0.858180,0.195142,35.314078,0.981379
+truck_baseline_validacion,truck,control_256x512,control,control,-,1.000000,256x512,0,449,,,,no,generada,entrenamiento,220,27.350241,0.857988,0.195240,35.310309,0.981373
+truck_baseline_validacion,truck,control_256x512,control,control,-,1.000000,256x512,0,449,,,,no,generada,prueba,31,27.346829,0.859546,0.194448,35.340825,0.981423

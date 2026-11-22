@@ -55,10 +55,10 @@ Limitación declarada: las poses COLMAP vienen de las imágenes originales, así
 |---|---|---|---|
 | 1 | Entender y fijar los métodos SPC (patrones, directa, TV) y su efecto | Esta sección y `src/patterns.py` | Hecho, falta decidir |
 | 2 | Comparar órdenes de Hadamard (secuencia de `spc-gs` vs cake-cutting de `inf449`) en 2D, Truck, 512×1024 | `results/orden_hadamard*.csv` | **Hecho** (ver §7) |
-| 3 | Ruido: apagado en lo principal y una variante con el modelo DMD ({0,1} + DC, Poisson, lectura, ADC) | `src/spc.py::medir_dmd`, `scripts/estudio_ruido_dmd.py` | Código y tests listos; corrida 2D pendiente (GPU ocupada) |
+| 3 | Ruido: apagado en lo principal y una variante con el modelo DMD ({0,1} + DC, Poisson, lectura, ADC) | `src/spc.py::medir_dmd`, `scripts/estudio_ruido_dmd.py` | **Hecho** (ver §9) |
 | 4 | Tabla 2D única: patrones × métodos × razones × rejillas (256×512 y 512×1024), con control y original | `results/tabla_2d.csv` | Parcial (existe `metrics_2d.csv`) |
-| 5 | Validar el baseline 3DGS contra el paper (Truck, 7k: 23.5 / 0.840 / 0.209) y explicar la diferencia con 17.7 dB | `configs/truck_baseline_validacion.yaml` (251 vistas) | Config lista; corre tras el paso 6 |
-| 6 | 3DGS en 512×1024 para las condiciones elegidas | `configs/truck_512x1024_3d.yaml` | **En ejecución** (WSL, ~1.2 h) |
+| 5 | Validar el baseline 3DGS contra el paper (Truck, 7k: 23.5 / 0.840 / 0.209) y explicar la diferencia con 17.7 dB | `configs/truck_baseline_validacion.yaml` (251 vistas) | **Hecho** (ver §9) |
+| 6 | 3DGS en 512×1024 para las condiciones elegidas | `configs/truck_512x1024_3d.yaml`, `results/truck_512x1024_3d/` | **Hecho** (ver §8) |
 | 7 | Tabla 2D → 3D (cuánto de la pérdida 2D llega al 3D) y figuras | `notebooks/03_resultados` | Parcial |
 | 8 | Medir tiempos con un mismo cronómetro (solo reconstrucción, por vista) | columna `s_por_vista` | Pendiente |
 | 9 | Limpieza: README corto, resultados a `docs/`, `data/truck` fuera de git | Repositorio ordenado | **Hecho** (sin commit) |
@@ -91,3 +91,37 @@ Se agregó el patrón `hadamard_cc` (`src/patterns.py`) y el script `scripts/com
   (el modelo de `spc-gs` usa ±1 directamente). Verificarlo requiere leer el operador de `inf449`.
 - Las 24 vistas de cada proyecto son distintas (`inf449` incluye 000011, 000022…; `spc-gs` 000012, 000023…), pero eso casi no cambia el PSNR.
 - Las 5 fallas de `tests/test_cli.py` en Windows son de permisos para crear enlaces simbólicos, no del cambio.
+
+## 8. Resultado del paso 6: 3DGS en rejilla 512×1024 (7000 iteraciones, semilla 449)
+
+17 condiciones (Hadamard y aleatorio, directa y TV, 4 razones, y control). Fuente: `results/truck_512x1024_3d/metrics_3d.csv`.
+
+| PSNR (dB) | Prueba (3) | Reservadas (230) | Entrenamiento (21) |
+|---|---|---|---|
+| baseline (originales) | 17.72 | 19.40 | 32.51 |
+| control 512×1024 | 17.64 | 19.47 | 31.69 |
+| Hadamard · TV, 5 / 10 / 25 / 50 % | 18.00 / 18.08 / 18.23 / 17.97 | 19.02 / 19.36 / 19.54 / 19.54 | 24.45 / 26.41 / 29.19 / 30.99 |
+| Aleatorio · TV, 5 / 10 / 25 / 50 % | 17.75 / 17.96 / 17.73 / 18.15 | 18.47 / 19.11 / 19.48 / 19.58 | 23.15 / 25.27 / 28.54 / 30.48 |
+
+- En vistas reservadas, Hadamard + TV iguala al baseline desde el 10 % (19.36 frente a 19.40 dB); las diferencias son de ~0.2 dB.
+- **El 3D se satura:** el PSNR 3D de las vistas de entrenamiento se correlaciona con el 2D (Pearson 0.985, 17 condiciones) y lo reproduce
+  (±0.35 dB) mientras el 2D está bajo ~28.5 dB; por encima queda por debajo (Hadamard + TV 50 %: 34.30 en 2D, 30.99 en 3D; control: 37.90 y 31.69).
+  El baseline solo alcanza 32.51 dB. En 256×512 la diferencia media 3D − 2D es −0.05 dB.
+- Costo: 162–384 s por corrida de 7000 iteraciones, hasta 2.66 M de gaussianas y 6.32 GiB (aleatorio directa 25 %).
+
+## 9. Resultados de los pasos 3 y 5
+
+**Baseline con 251 vistas** (220 de entrenamiento y 31 de prueba, 7000 it., semilla 449; `results/truck_baseline_validacion/`):
+23.54 dB / SSIM 0.848 / LPIPS 0.242, frente a 23.51 / 0.840 / 0.209 del artículo de 3DGS. PSNR y SSIM coinciden; el LPIPS es 0.033 mayor (causa no investigada).
+Entrenó en 332 s con 2.02 M de gaussianas y 6.23 GiB reservados. El 17.72 dB del baseline principal corresponde al régimen de pocas vistas.
+
+**Ruido y modelo DMD {0,1}** (`results/ruido_dmd.csv`, 256×512, 25 %, 24 vistas; PSNR dB):
+
+| Patrón · método | sin ruido | DMD 1e9 | DMD 1e8 | DMD 1e7 | ±1 ideal 1e7 |
+|---|---|---|---|---|---|
+| Hadamard · directa | 23.92 | 23.89 | 23.69 | 22.20 | 23.91 |
+| Hadamard · TV | 24.87 | 24.83 | 24.56 | 22.59 | 24.87 |
+| Aleatorio · directa | 13.87 | 13.86 | 13.85 | 13.70 | 13.86 |
+| Aleatorio · TV | 24.39 | 24.28 | 23.70 | 20.93 | 24.38 |
+
+El ruido aplicado a coeficientes ±1 ideales casi no afecta (≤ 0.01 dB); el modelo DMD pierde hasta 2.28 dB (Hadamard + TV) y 3.46 dB (aleatorio + TV) con 1e7 fotones.

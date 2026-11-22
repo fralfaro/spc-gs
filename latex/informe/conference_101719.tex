@@ -47,7 +47,8 @@ On a $256\times512$ grid, Hadamard with TV loses 5.70, 4.33, 2.35 and 0.89\,dB (
 5, 10, 25 and 50\,\% of the measurements, and TV improves the direct reconstruction by 0.4 to 1.0\,dB. Random patterns
 are unusable without regularization (12.7 to 15.8\,dB). In 3D, the PSNR on three test views is nearly insensitive to
 the condition, but a 230-view held-out evaluation separates them: Hadamard with TV at 50\,\% (19.38\,dB) matches the
-baseline (19.40\,dB). On the training views, 3DGS reproduces almost exactly the 2D degradation. We also report run
+baseline (19.40\,dB); on a finer $512\times1024$ grid this happens from 10\,\% of the measurements. On the training views, 3DGS
+reproduces the 2D degradation while the 2D PSNR is below about 28.5\,dB and saturates near 31 to 32\,dB above it. We also report run
 times and memory on a laptop RTX 4060 (8\,GB). Code and configurations are public.
 \end{abstract}
 
@@ -168,6 +169,15 @@ The resulting patterns are $\pm1$ with a random spatial structure. A dense i.i.d
 not binary and serves as a reference in 2D only. A real DMD shows only $\{0,1\}$ masks, so $\pm1$ patterns are obtained
 with two complementary patterns (differential measurement); here the $\pm1$ patterns are simulated directly.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figs_spc/fig_patterns.png}
+\caption{Examples of measurement patterns on a $64\times128$ grid (same structure as the experiments). Top: Hadamard patterns
+$(u,v)$ in sequency order, from low to high spatial frequency. Bottom: random binary patterns obtained by permuting pixels
+before the Hadamard transform. White and black are the $+1$ and $-1$ values.}
+\label{fig:patterns}
+\end{figure}
+
 \subsection{Reconstruction}
 \textbf{Direct:} $\hat x=\Phi^\top y$, the minimum-norm least-squares solution (zeros for unmeasured coefficients).
 \textbf{TV:} $\hat x=\arg\min_x\frac12\|\Phi x-y\|_2^2+\lambda\,\mathrm{TV}(x)$ with FISTA (step 1, because
@@ -178,9 +188,11 @@ four cases. The same $\lambda$ is used for all ratios and for both grids; it was
 
 \subsection{Detector noise}
 The detector model adds Poisson shot noise, Gaussian read noise and $b$-bit quantization,
-$y_i=Q_b\!\left(\mathrm{Pois}(\gamma|y_i|)/\gamma+\mathcal N(0,\sigma^2)\right)$ with the sign restored. It is switched off
-in all reported experiments except one check (Sec.~\ref{sec:order}), where $\gamma=10^9$ photons, $\sigma=10^{-5}$ of
-$\max|y|$ and $b=16$.
+$y_i=Q_b\!\left(\mathrm{Pois}(\gamma|y_i|)/\gamma+\mathcal N(0,\sigma^2)\right)$ with the sign restored, where $\gamma$ is the
+photon count at the full scale $\max|y|$, $\sigma=10^{-5}$ of $\max|y|$ and $b=16$. It can be applied in two ways: to the ideal $\pm1$
+coefficients, or to a DMD model in which the camera shows $\{0,1\}$ masks $p=(1+h)/2$ plus one all-on (DC) measurement averaged 16
+times, and the coefficient is recovered as $c=(2y-\mathrm{DC})/\sqrt{N}$. The DMD model doubles the noise of every measurement and
+adds the DC noise to all of them. Noise is off in all main results; Sec.~\ref{sec:order} studies it in 2D.
 
 \subsection{Data, views and 3DGS training}
 We use the Truck scene (251 images of 979$\times$546, COLMAP PINHOLE model of 1957$\times$1091 whose intrinsics are scaled to
@@ -268,9 +280,39 @@ and recovers the wooden slats and the wheel from 25\,\%; random patterns with di
 \label{sec:order}
 Because the cake-cutting and the sequency order are different measurement sets, we compared them on $512\times1024$,
 all 24 views (Table~\ref{tab:order}). The sequency order is equal or better, by 0.0 to 0.6\,dB, with the largest advantage
-at low ratios. Adding the noise model above ($10^9$ photons, $\sigma=10^{-5}$, 16 bits) changed the PSNR of the
-cake-cutting order by at most 0.12\,dB, so at these noise levels the detector is not the limiting factor. Because we use the
-sequency order in all other experiments, this choice is supported by the data but it is a small effect.
+at low ratios. Because we use the sequency order in all other experiments, this choice is supported by the data but it is a small
+effect.
+
+\subsection{Detector noise and the DMD model}
+Table~\ref{tab:noise} studies noise on the $256\times512$ grid at 25\,\% of the measurements (24 views). Applying noise to the
+ideal $\pm1$ coefficients changes the PSNR by at most 0.01\,dB even with $10^{7}$ photons, because the shot noise scales with
+$|y|$ and the AC coefficients are small compared with the DC one that sets $\max|y|$. The DMD model is much more demanding: with
+$10^{9}$ photons the loss is at most 0.11\,dB, with $10^{8}$ it is 0.02 to 0.69\,dB, and with $10^{7}$ it reaches 2.28\,dB
+for Hadamard with TV and 3.46\,dB for random patterns with TV. Hadamard is more robust than random with TV at low photon counts
+(22.59 against 20.93\,dB at $10^{7}$), and the direct reconstruction of random patterns is already unusable. An earlier check
+with the cake-cutting order on $512\times1024$ and ideal $\pm1$ noise ($10^9$ photons) changed the PSNR by at most 0.12\,dB,
+which is consistent with this: the ideal-coefficient noise model hides the effect of detector noise, and the DMD model should be
+used when the noise level matters.
+
+\begin{table}[t]
+\caption{Noise on the $256\times512$ grid, 25\,\%, PSNR (dB), 24 views. DMD model with $\sigma=10^{-5}$ and 16 bits; the last column
+applies $10^{7}$ photons to the ideal $\pm1$ coefficients.}
+\label{tab:noise}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lccccc}
+\toprule
+ & \multicolumn{4}{c}{DMD $\{0,1\}$ model} & Ideal $\pm1$ \\
+Pattern, method & no noise & $10^{9}$ & $10^{8}$ & $10^{7}$ & $10^{7}$ \\
+\midrule
+Hadamard, direct & 23.92 & 23.89 & 23.69 & 22.20 & 23.91 \\
+Hadamard, TV & 24.87 & 24.83 & 24.56 & 22.59 & 24.87 \\
+Random, direct & 13.87 & 13.86 & 13.85 & 13.70 & 13.86 \\
+Random, TV & 24.39 & 24.28 & 23.70 & 20.93 & 24.38 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{table}[t]
 \caption{Hadamard ordering, 2D PSNR (dB), $512\times1024$, 24 views, no noise.}
@@ -377,16 +419,62 @@ random with TV at 5\,\%.}
 \label{fig:renders}
 \end{figure*}
 
-\subsection{Reference check of the baseline}
-The original 3DGS paper reports 23.5\,dB, SSIM 0.840 and LPIPS 0.209 on Truck at 7000 iterations \cite{kerbl2023}, versus
-17.72\,dB, 0.662 and 0.355 for our baseline. The numbers are not comparable and this is \emph{not} a validation: that protocol
-trains on most of the 251 views with the official implementation, while we train on 21 views with a compact trainer on gsplat
-and evaluate on three test views at full resolution. What the comparison between conditions needs is that all conditions use the
-same pipeline, which they do. A validation with the official protocol remains open.
+\subsection{Baseline validation}
+To check the trainer, we repeated the baseline with the protocol of the original paper as far as our code allows: all 251 original
+views, 220 for training and 31 held out (every eighth view), full resolution, 7000 iterations and seed 449
+(\texttt{configs/truck\_baseline\_validacion.yaml}). It reaches 23.54\,dB PSNR, 0.848 SSIM and 0.242 LPIPS on the 31 held-out views,
+against 23.51\,dB, 0.840 and 0.209 reported by Kerbl \textit{et al.}\ for Truck at 7000 iterations \cite{kerbl2023}. PSNR and SSIM
+agree within 0.04\,dB and 0.008, which supports that the compact trainer on gsplat reproduces 3DGS; LPIPS is 0.033 higher, and we did
+not investigate why (the held-out views, the LPIPS implementation and the trainer all differ from the original). This run took
+332\,s, with 2.02\,M Gaussians and 6.23\,GiB of reserved memory. It also shows that the much lower 17.72\,dB of our main baseline is
+consistent with the few-view regime (21 training views, three test views) and not with a faulty trainer.
 
 \section{3D Results on a $512\times1024$ Grid}
 \label{sec:3d512}
-\todo{fill with the 512x1024 3DGS results (job running at the time of writing)}
+The $512\times1024$ grid keeps 98\,\% of the image pixels, so the control loses little (38.00\,dB in 2D). We trained the same
+17 conditions (Hadamard and random, direct and TV, four ratios, plus the control) and the same evaluation sets as in
+Sec.~\ref{sec:3d}, again with seed 449; the baseline is the same model as before. Table~\ref{tab:3d512} gives the 7000-iteration results.
+
+\begin{table*}[t]
+\caption{3DGS, 7000 iterations, $512\times1024$ grid, seed 449. PSNR (dB) against the original images on the 3 test views, on
+230 held-out views, and on the 21 training views. Baseline (original images): 17.72 / 19.40 / 32.51. Control: 17.64 / 19.47 / 31.69.}
+\label{tab:3d512}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lcccc|cccc|cccc}
+\toprule
+ & \multicolumn{4}{c|}{Test (3 views)} & \multicolumn{4}{c|}{Held-out (230 views)} & \multicolumn{4}{c}{Training (21 views)}\\
+Pattern, method & 5 & 10 & 25 & 50 & 5 & 10 & 25 & 50 & 5 & 10 & 25 & 50 \\
+\midrule
+Hadamard, direct & 17.59 & 17.71 & 17.95 & 17.77 & 18.64 & 19.02 & 19.39 & 19.52 & 23.24 & 25.10 & 28.06 & 30.64 \\
+Hadamard, TV & 18.00 & 18.08 & 18.23 & 17.97 & 19.02 & 19.36 & \textbf{19.54} & \textbf{19.54} & 24.45 & 26.41 & 29.19 & 30.99 \\
+Random, direct & 12.12 & 12.24 & 12.75 & 13.56 & 12.38 & 12.46 & 12.97 & 14.30 & 12.80 & 13.16 & 14.34 & 16.87 \\
+Random, TV & 17.75 & 17.96 & 17.73 & 18.15 & 18.47 & 19.11 & 19.48 & \textbf{19.58} & 23.15 & 25.27 & 28.54 & 30.48 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\textbf{Held-out views.} With the finer grid the SPC models reach the baseline earlier. Hadamard with TV obtains 19.36\,dB at
+10\,\% (baseline 19.40\,dB) and 19.54\,dB at 25 and 50\,\%, 0.14\,dB above the baseline; random with TV reaches 19.58\,dB at 50\,\%.
+All of these differences are of the order of 0.2\,dB, so we read them as ``equal to the baseline'' and not as an improvement. At 5\,\%,
+Hadamard with TV obtains 19.02\,dB on this grid against 18.26\,dB on $256\times512$ (Table~\ref{tab:3d}): the grid matters most
+when few measurements are taken. SSIM and LPIPS on the held-out views still favor the baseline slightly (0.732 and 0.302 against
+0.734 and 0.318 for Hadamard with TV at 50\,\%). Random with direct reconstruction stays unusable (12.4 to 14.3\,dB). The three test
+views again do not order the conditions (17.6 to 18.2\,dB, excluding random with direct reconstruction).
+
+\textbf{Training views: the 3D model saturates.} Here the 2D degradation is \emph{not} always reproduced. Over the 17 conditions, the
+PSNR of the 3D render on the training views is strongly correlated with the 2D PSNR of the same views (Pearson 0.985), and the
+difference is within $\pm0.35$\,dB while the 2D PSNR is below about 28.5\,dB (for example, Hadamard with TV at 5\,\%: 24.45\,dB in both).
+Above that level the 3D model falls short: Hadamard with TV at 50\,\% has 34.30\,dB in 2D and 30.99\,dB in 3D ($-3.31$\,dB), and
+the control has 37.90 and 31.69\,dB ($-6.21$\,dB). The baseline itself reaches only 32.51\,dB at 7000 iterations, so with 21 views
+and this budget 3DGS cannot fit fine detail beyond about 31 to 32\,dB. On the coarse $256\times512$ grid the mean difference between
+3D and 2D is $-0.05$\,dB (range $-0.50$ to $+0.20$\,dB), because every 2D image is below that limit. This refines the statement of
+Sec.~\ref{sec:3d}: 3DGS inherits the 2D degradation as long as the 2D images are within what the 3D model can fit.
+
+\textbf{Cost.} Runs are slower and larger than on the coarse grid: 162 to 384\,s per 7000-iteration run (64 to 81\,s at 3000
+iterations), up to 2.66\,M Gaussians and 6.32\,GiB of peak memory for random patterns with direct reconstruction (25 and
+50\,\%), against 0.59 to 0.99\,M Gaussians for Hadamard with TV.
 
 \section{Time and Memory}
 \label{sec:time}
@@ -406,7 +494,7 @@ Stage & Setting & Time\\
 2D, TV (100 it.) & $256\times512$ & 0.99--1.27 s / view \\
 2D, TV (100 it.) & $512\times1024$, Hadamard & 1.69--1.75 s / view \\
 3DGS 3000 it. & all conditions & 63--90 s / run \\
-3DGS 7000 it. & all conditions & 146--363 s / run \\
+3DGS 7000 it. & all conditions & 146--384 s / run \\
 3DGS 30\,000 it. & baseline / control & 3495 s / 1140 s \\
 \bottomrule
 \end{tabular}
@@ -420,10 +508,10 @@ In 3D, one 3000-iteration run took 1213\,s (Hadamard direct 10\,\%) against 63 t
 attribute it to the machine (probably power saving) and did not repeat it.
 
 The number of Gaussians depends strongly on the input. The baseline grows from 0.78 M (3000 it.) to 1.36 M (7000 it.) and
-2.49 M (30\,000 it.); SPC conditions with TV use 0.29 to 0.61 M at 7000 iterations, because TV removes the noise that other
-conditions try to fit; random patterns with direct reconstruction need up to 1.89 M Gaussians (50\,\%, 7000 it.) because they
-try to fit the noise. Peak reserved memory was 4.25\,GiB for that run, 3.35\,GiB for the baseline at 7000 iterations and
-5.65\,GiB at 30\,000 iterations. The maximum read with \texttt{nvidia-smi} during the whole experiment was 4875\,MiB (it
+2.49 M (30\,000 it.); SPC conditions with TV use 0.29 to 0.99 M at 7000 iterations (both grids), because TV removes the noise that other
+conditions try to fit; random patterns with direct reconstruction need up to 1.89 M Gaussians on the $256\times512$ grid and 2.66 M on
+$512\times1024$ because they try to fit the noise. Peak memory was 4.25\,GiB for the former, 6.32\,GiB for the latter (25\,\%,
+7000 it.), 3.35\,GiB for the baseline at 7000 iterations and 5.65\,GiB at 30\,000 iterations. The maximum read with \texttt{nvidia-smi} during the whole experiment was 4875\,MiB (it
 includes memory used by Windows). A 30\,000-iteration run of the 16 SPC conditions was not done for time (19 to 58 minutes per
 run for baseline and control).
 
@@ -444,23 +532,23 @@ not by the photometric quality of the input.
 \begin{itemize}
 \item One scene (Truck) and one main seed. Differences of a few tenths of a dB may be within the training variability.
 \item Only 21 training views, so absolute 3DGS values are lower than published ones; the comparison between conditions is what
-the study supports.
+the study supports. With this budget 3DGS saturates near 31 to 32\,dB on the training views (Sec.~\ref{sec:3d512}).
 \item Three test views (plus 230 held-out views as an extended evaluation); the PSNR on three views is not sensitive.
 \item Poses and the initial point cloud come from COLMAP on the original images; a real SPC would not have them, so the 3D results
 are an optimistic bound.
 \item The views are already captured images, not an optical acquisition: measurements inherit the dataset's JPEG and blur, and
 they are in sRGB, not linear radiance. A DMD with $\pm1$ patterns is simulated directly. The scene is assumed static.
-\item Noise is off in the reported results; the single noise check changed the PSNR by at most 0.12\,dB.
+\item Noise is off in the main results. The 2D noise study (Table~\ref{tab:noise}) shows losses of up to 3.5\,dB with $10^7$ photons in the DMD model; noise in 3D was not studied.
 \item $\lambda=0.003$ was selected on one view and for the $256\times512$ grid; it was not re-tuned for $512\times1024$.
-\item The 3DGS trainer is a compact one built on gsplat and its baseline was not validated against the official implementation.
+\item The 3DGS trainer is a compact one built on gsplat. Its baseline matches the published PSNR and SSIM on the full-view protocol, but we did not run the official implementation and LPIPS differs by 0.033.
 \end{itemize}
 
 \section{Conclusions and Future Work}
 Measuring 5\,\% of the coefficients with Hadamard patterns and TV costs 5.70\,dB with respect to the control on a
 $256\times512$ grid, and 50\,\% costs 0.89\,dB. TV helps in all cases and is indispensable for random patterns. In 3D, 3DGS
-reproduces the 2D degradation on its training views, and on 230 held-out views Hadamard with TV at 50\,\% matches the
-baseline, while the PSNR on three test views cannot rank the conditions. Future work: more scenes and seeds, a validation of the
-baseline with the official protocol, re-estimating poses with COLMAP on the SPC views, noise in the 3D experiments, training 3DGS
+reproduces the 2D degradation on its training views up to about 28.5\,dB (and saturates near 31 to 32\,dB beyond it), and on 230 held-out views Hadamard with TV at 50\,\% matches the
+baseline, while the PSNR on three test views cannot rank the conditions. Future work: more scenes and seeds, a comparison with the
+official 3DGS implementation, re-estimating poses with COLMAP on the SPC views, noise in the 3D experiments, training 3DGS
 directly against the measurements, and patterns that change between views.
 
 \section*{Use of AI Tools}
