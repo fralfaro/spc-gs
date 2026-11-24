@@ -16,11 +16,11 @@ format:
     width: 1600
     height: 900
     margin: 0.04
-    logo: "images/usm.png"
+    logo: "images/Logo_UTFSM.png"
     scrollable: false
     title-slide: false
     slide-level: 2
-    footer: "INF449 · Single Pixel Camera + 3D Gaussian Splatting"
+    footer: "IPD434 · Single Pixel Camera + 3D Gaussian Splatting"
     preview-links: auto
     html-math-method: katex
     embed-resources: true
@@ -35,7 +35,7 @@ execute:
 
 :::::::: title-hero
 ::: eyebrow
-INF449 · Fotografía Computacional · Proyecto final
+IPD434 · Seminario Soft Computing · Proyecto final
 :::
 
 ::: hero-paper
@@ -44,7 +44,7 @@ De la reconstrucción 2D a 3D Gaussian Splatting
 :::
 
 ::: hero-authors
-Francisco Alfaro · Ayrton Perez
+Francisco Alfaro Medina
 :::
 
 ::: hero-meta
@@ -54,7 +54,7 @@ Escena Truck (Tanks and Temples) · código: github.com/fralfaro/spc-gs
 :::
 
 ::: hero-presenter
-Presenta: **Francisco Alfaro** · Departamento de Electrónica
+Presenta: **Francisco Alfaro Medina** · Departamento de Electrónica
 :::
 ::::::::
 
@@ -102,6 +102,110 @@ Medir cuánta calidad se pierde en las vistas 2D y en un modelo **3D Gaussian Sp
 
 ::: notes
 El problema es de costo: la cámara de un píxel es barata en el sensor, pero cada imagen exige una secuencia de mediciones. Ese costo se multiplica en 3D, porque 3DGS necesita muchas vistas. La brecha es que no está cuantificado cuánto de la pérdida 2D llega al modelo 3D. El objetivo es medirlo de forma controlada.
+:::
+
+## Antecedentes: una cámara de un píxel mide la escena con un solo detector
+
+::: eyebrow
+Antecedentes · Cámara de un píxel (SPC)
+:::
+
+::::: fig-text
+:::: {.image-frame}
+![](images/spc1.png){fig-alt="Esquema de una cámara de un píxel: cubo de datos, lente objetivo, apertura codificada con el patrón Φk, lente colimadora y sensor de un solo píxel."}
+
+::: image-caption
+Esquema de una cámara de un píxel: la luz pasa por un patrón y un lente la concentra en un solo sensor.
+:::
+::::
+
+::: points
+**1. Se proyecta un patrón** $\Phi_k$ (apertura codificada o DMD) sobre la escena.
+
+**2. Un solo fotodetector suma** toda la luz que pasa por el patrón: **un número** $y_k$.
+
+**3. Se repite con K patrones** distintos y se reconstruye la imagen a partir de los $y_k$.
+:::
+:::::
+
+::: notes
+Esta es la idea física. En vez de un sensor con millones de píxeles, hay un único detector. Delante se coloca un patrón, por ejemplo en un DMD. Cada patrón da una sola medición, la suma de la luz que deja pasar. Repitiendo con muchos patrones se obtiene un vector de mediciones, y de ahí se reconstruye la imagen. Esto simplifica el sensor, pero cuesta más mediciones por imagen.
+:::
+
+## Antecedentes: con pocas mediciones la imagen no se ve, con más sí
+
+::: eyebrow
+Antecedentes · ¿Por qué importa el número de mediciones?
+:::
+
+::::: fig-text
+:::: {.image-frame}
+![](images/spc2.jpg){fig-alt="Tres escenas de referencia (fila a) y su reconstrucción con una cámara de un píxel con 50 y con 2500 mediciones (fila b), con SSIM y PSNR."}
+
+::: image-caption
+Fila a: escenas. Fila b: cámara de un píxel con M = 50 y M = 2500 mediciones (PSNR ≈ 10–11 dB frente a 27–34 dB).
+:::
+::::
+
+::: points
+**Pocas mediciones:** la reconstrucción es una mancha, **PSNR ≈ 10 dB**.
+
+**Más mediciones:** aparecen bordes y detalle, **PSNR de 27 a 34 dB**.
+
+**Esta es la tensión del proyecto:** cada medición cuesta tiempo, y la calidad depende de cuántas se tomen.
+:::
+:::::
+
+::: notes
+Esta figura, de la literatura de imagen comprimida, muestra por qué el número de mediciones es la variable central. Con 50 mediciones la cámara de un píxel produce una mancha, con 10 a 11 dB de PSNR. Con 2500 se distinguen las escenas, con 27 a 34 dB. En nuestro proyecto medimos exactamente esa curva, pero con patrones de Hadamard y reconstrucción por variación total, y luego vemos qué le pasa a un modelo 3D.
+:::
+
+## Antecedentes: 3D Gaussian Splatting representa la escena con gaussianas 3D
+
+::: eyebrow
+Antecedentes · 3D Gaussian Splatting (3DGS)
+:::
+
+::::: {.image-frame .wide-fig}
+![](images/3dgs.jpeg){fig-alt="Gaussianas 3D, proyección al plano de la imagen, rasterizador con mezcla alfa e imagen final de un camión."}
+:::::
+
+::::: {.points .points-row}
+::: fragment
+**La escena es una nube de gaussianas 3D**: elipsoides con posición, forma, color y opacidad.
+:::
+
+::: fragment
+**Renderizar = proyectar a 2D y mezclar** de adelante hacia atrás (*alpha blending*): rápido y diferenciable.
+:::
+:::::
+
+::: notes
+3DGS no usa una malla ni una red densa: representa la escena como una nube de gaussianas 3D, cada una con posición, forma, color y opacidad. Para generar una imagen desde una cámara, cada gaussiana se proyecta al plano de la imagen y se mezclan de adelante hacia atrás con alpha blending. Todo el proceso es diferenciable, y eso permite entrenarlo con imágenes.
+:::
+
+## Antecedentes: 3DGS se entrena comparando sus renders con las fotos
+
+::: eyebrow
+Antecedentes · Entrenamiento de 3DGS
+:::
+
+::::: {.image-frame .wide-fig}
+![](images/3dgs_pipeline_v3-1.webp){fig-alt="Pipeline de 3DGS: Structure from Motion, inicialización, proyección, rasterizador diferenciable por tiles, pérdida contra la imagen real y control adaptativo de densidad."}
+:::::
+
+::::: {.points .points-row}
+::: fragment
+**Entrada:** fotos y poses de cámara (COLMAP). **Pérdida:** render frente a foto, $(1-\lambda)\mathcal{L}_1+\lambda\mathcal{L}_{\text{D-SSIM}}$.
+:::
+
+::: fragment
+**Aquí entra la cámara de un píxel:** las "fotos" de entrenamiento serán **imágenes reconstruidas** con pocas mediciones; el modelo aprende de ellas.
+:::
+:::::
+
+::: notes
+El entrenamiento parte de una nube de puntos de Structure from Motion. En cada iteración se renderiza una vista, se compara con la foto real mediante L1 más D-SSIM, y el gradiente actualiza las gaussianas; además, un control de densidad divide, clona o poda gaussianas. Lo importante para este trabajo es que la foto de referencia en la pérdida es la entrada del método. Si esa foto viene de una cámara de un píxel con pocas mediciones, el modelo aprende de una imagen degradada. Eso es lo que probamos con H4.
 :::
 
 ## Cuatro preguntas y un objetivo medible

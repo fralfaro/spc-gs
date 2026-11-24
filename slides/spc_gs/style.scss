@@ -659,3 +659,11 @@ $fs-chrome: 19px;  // pie y numeración: no los escala reveal
 .reveal .eq-row .points p, .reveal .eq-row.points p { font-size: 38px; }
 .reveal .points p { font-size: 35px; }
 .reveal .points-row { margin-top: 1em; }
+
+.reveal .fig-text { align-items: center; display: grid; gap: 36px; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); margin-top: 22px; }
+.reveal .fig-text .image-frame img { max-height: 560px; width: 100%; object-fit: contain; }
+.reveal .fig-text .points p { font-size: 32px; }
+.reveal .fig-text .points p + p { margin-top: 0.8em; }
+.reveal .wide-fig { margin-top: 18px; }
+.reveal .wide-fig img { max-height: 540px; width: 100%; object-fit: contain; }
+.reveal .wide-fig + .points-row p { font-size: 31px; }
