@@ -785,14 +785,6 @@ Una **evaluación con pocas vistas de prueba engaña**: usar muchas vistas reser
 Renders de prueba (7000 it.): original, baseline, control, Hadamard + TV 5 % y 50 %, aleatorio + TV 5 %.
 :::
 :::
-
-::: closing-qa
-[Gracias]{.qa-big}
-
-Preguntas
-
-github.com/fralfaro/spc-gs
-:::
 ::::
 
 ::: notes
@@ -807,6 +799,37 @@ Para cerrar: en 2D, Hadamard con TV pierde 5,7 dB con el 5 por ciento de las med
 **¿Por qué dos rejillas?** 256 × 512 descarta el 75 % de los píxeles y 512 × 1024 conserva el 98 %. En 3D, la rejilla fina iguala al baseline desde el 10 % de las mediciones, pero el 3D se satura en 31–32 dB.
 
 **¿Y el ruido?** Está apagado en los resultados principales. En 2D, con un modelo de DMD real, 1e9 fotones cuesta a lo más 0,11 dB y 1e7 fotones cuesta 2,3 dB (Hadamard + TV) a 3,5 dB (aleatorio + TV). No se estudió en 3D.
+:::
+
+##  {.hero-slide}
+
+:::::::: title-hero
+::: eyebrow
+IPD434 · Seminario Soft Computing · Proyecto final
+:::
+
+::: hero-paper
+¿Cuántas mediciones necesita una cámara de un píxel?\
+De la reconstrucción 2D a 3D Gaussian Splatting
+:::
+
+::: hero-authors
+Francisco Alfaro Medina
+:::
+
+::: hero-meta
+Universidad Técnica Federico Santa María, Valparaíso, Chile
+
+Escena Truck (Tanks and Temples) · código: github.com/fralfaro/spc-gs
+:::
+
+::: hero-presenter
+Presenta: **Francisco Alfaro Medina** · Departamento de Electrónica
+:::
+::::::::
+
+::: notes
+Presento el proyecto final: una cámara de un píxel simulada sobre las vistas de la escena Truck, y qué le pasa a la calidad, primero en 2D y luego en un modelo 3D con Gaussian Splatting, cuando se reduce el número de mediciones. Voy a dejar claro el objetivo, las hipótesis y qué resultados las confirman.
 :::
 
 ## Referencias {visibility="uncounted"}

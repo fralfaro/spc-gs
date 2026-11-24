@@ -641,8 +641,10 @@ $fs-chrome: 19px;  // pie y numeración: no los escala reveal
 
 .reveal .stack-figs .image-frame { margin-top: 10px; }
 .reveal .stack-figs .image-frame img { max-height: 330px; width: auto; }
-.reveal .closing-row { grid-template-columns: 1040px minmax(0, 1fr); }
-.reveal .closing-row .image-frame img { max-height: none; width: 100%; }
+.reveal .closing-row { grid-template-columns: 1fr; }
+.reveal .closing-row { margin-top: 8px; }
+.reveal .closing-row .image-frame img { max-height: 385px; width: 100%; object-fit: contain; }
+.reveal .closing-row .image-caption { font-size: 24px; }
 .reveal .qa-big { color: white; display: block; font-size: 64px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
 .reveal .flow-node b { font-size: 36px; }
 .reveal .flow-node span { font-size: 27px; }
