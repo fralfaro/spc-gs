@@ -1,4 +1,4 @@
-# spc-gs: cámara de un píxel simulada + Gaussian Splatting
+# Single Pixel Camera + Gaussian Splatting
 
 Proyecto del curso INF449 (Fotografía Computacional). Autores: Francisco Alfaro y Ayrton Perez.
 
