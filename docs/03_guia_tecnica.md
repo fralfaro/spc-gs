@@ -1,6 +1,6 @@
-# spc-gs: cámara de un píxel simulada + Gaussian Splatting
+# Guía técnica (detalle de instalación, flujo y estructura)
 
-Proyecto del curso INF449 (Fotografía Computacional).
+Proyecto del curso INF449 (Fotografía Computacional). Autores: Francisco Alfaro y Ayrton Perez.
 
 ## Objetivo
 
@@ -250,7 +250,7 @@ spc-gs/
 
 ## Documentación
 
-- [`docs/00_objetivo_y_flujo.md`](docs/00_objetivo_y_flujo.md): objetivo, qué se mide, variables, flujo y pasos del experimento.
-- [`docs/01_decisiones_y_configuracion.md`](docs/01_decisiones_y_configuracion.md): decisiones de diseño y configuración exacta.
-- [`docs/02_resultados.md`](docs/02_resultados.md): tablas 2D y 3D, observaciones, 30000 iteraciones y limitaciones.
-- [`latex/informe/`](latex/informe/): informe (inglés, IEEEtran) con todos los resultados.
+- [`docs/00_objetivo_y_flujo.md`](00_objetivo_y_flujo.md): objetivo, qué se mide, variables, flujo y pasos del experimento.
+- [`docs/01_decisiones_y_configuracion.md`](01_decisiones_y_configuracion.md): decisiones de diseño y configuración exacta.
+- [`docs/02_resultados.md`](02_resultados.md): tablas 2D y 3D, observaciones, 30000 iteraciones y limitaciones.
+- [`latex/informe/`](../latex/informe/): informe (IEEEtran) con todos los resultados.

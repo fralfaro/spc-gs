@@ -196,11 +196,11 @@ Antecedentes · Entrenamiento de 3DGS
 
 ::::: {.points .points-row}
 ::: fragment
-**Entrada:** fotos y poses de cámara (COLMAP). **Pérdida:** render frente a foto, $(1-\lambda)\mathcal{L}_1+\lambda\mathcal{L}_{\text{D-SSIM}}$.
+**Entrada:** fotos y poses de cámara (COLMAP). <br> **Pérdida:** render frente a foto, $(1-\lambda)\mathcal{L}_1+\lambda\mathcal{L}_{\text{D-SSIM}}$.
 :::
 
 ::: fragment
-**Aquí entra la cámara de un píxel:** las "fotos" de entrenamiento serán **imágenes reconstruidas** con pocas mediciones; el modelo aprende de ellas.
+Las "fotos" de *train* serán **imágenes reconstruidas** con pocas mediciones; el modelo aprende de ellas.
 :::
 :::::
 
@@ -300,11 +300,12 @@ Hadamard por secuencia (arriba) y aleatorio binario (abajo).
 
 ::::: {.points .points-row}
 ::: fragment
-**Hadamard:** binario ±1, se miden primero las **bajas frecuencias**. **Aleatorio:** Hadamard con píxeles permutados; siempre se mide el nivel medio (DC).
+- **Hadamard:** binario -1 o +1, en este caso, se miden primero las **bajas frecuencias**.
+- **Aleatorio:** Hadamard con píxeles permutados; siempre se mide el nivel medio (DC).
 :::
 
 ::: fragment
-**DCT:** referencia no binaria. Un DMD real solo muestra 0/1, así que ±1 se obtiene con dos patrones complementarios.
+- **DCT:** referencia no binaria. Un DMD real solo muestra 0/1, así que ±1 se obtiene con dos patrones complementarios.
 :::
 :::::
 
@@ -454,9 +455,7 @@ Calidad frente a la razón de medición. Línea punteada: control.
 :::: {.image-frame}
 ![](images/fig_2d_visual.png){fig-alt="Vista 000208 de Truck: original, control, Hadamard con TV a 5, 10, 25 y 50 por ciento, Hadamard directa al 10 por ciento, aleatorio directa y aleatorio con TV al 25 por ciento."}
 
-::: image-caption
-Vista 000208, rejilla 256 × 512. La directa aleatoria es ruido; con TV se recuperan tablas y rueda.
-:::
+
 ::::
 
 ::: notes
@@ -464,6 +463,8 @@ La figura de arriba resume las curvas de PSNR en las dos rejillas y el LPIPS. Ab
 :::
 
 ## El techo lo fija la rejilla: 27,2 dB frente a 38,0 dB sin cámara
+
+<br><br>
 
 ::: eyebrow
 Resultados 2D · Por qué importa el control
